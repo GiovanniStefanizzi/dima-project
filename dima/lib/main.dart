@@ -1,3 +1,4 @@
+import 'package:dima/pages/register/register.dart';
 import 'package:flutter/material.dart';
 import 'pages/login/login.dart';
 

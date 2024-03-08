@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
-  final _formKey=GlobalKey<FormState>();
-
+class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +26,6 @@ class _LoginState extends State<Login> {
               margin: const EdgeInsets.only(top: 150, bottom: 300, left: 40, right: 40),
               padding: const EdgeInsets.all(20),
               child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -47,34 +38,35 @@ class _LoginState extends State<Login> {
                         )
                       ),
                     ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'passwords',
+                        hintText: 'passwords',
+                        border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25)
+                        )
+                      ),
+                    ),
                     Column(
                       children: [
                         TextFormField(
                           obscureText: true,
                           decoration: InputDecoration(
-                            labelText: 'passwords',
-                            hintText: 'passwords',
+                            labelText: 'repeat passwords',
+                            hintText: 'repeat passwords',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),                              ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty){
-                              return "insert a password";
-                            }
-                            if (value.length < 8) {
-                              return 'Password must be at least 8 characters';
-                            }
-                            return null;
-                          },
+                          //todo: validator: ,
                         ),
                         const SizedBox(height: 5),
                         TextButton(onPressed: () {},
-                        child: const Text('New user? Sign up!'))
+                        child: const Text('Already have an account? Sign in!'))
                       ],
                     ),
                     ElevatedButton(
                       onPressed: () {},
-                      child: const Text('sign in')),
+                      child: const Text('sign up')),
                     ElevatedButton(
                       onPressed: () {},
                       child: const Text('sign in with Google'))
