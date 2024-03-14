@@ -1,8 +1,15 @@
 import 'package:dima/pages/register/register.dart';
 import 'package:flutter/material.dart';
 import 'pages/login/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+// ...
+
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
