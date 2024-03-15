@@ -49,16 +49,17 @@ final AuthService _auth = AuthService();
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextFormField(
-                      controller: _usernameController,
+                      controller: _emailController,
                       decoration: InputDecoration(
-                        labelText: 'username',
-                        hintText: 'username',
+                        labelText: 'email',
+                        hintText: 'email',
                         border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25)
                         )
                       ),
                     ),
                     TextFormField(
+                      controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: 'passwords',
                         hintText: 'passwords',
@@ -80,12 +81,16 @@ final AuthService _auth = AuthService();
                           //todo: validator: ,
                         ),
                         const SizedBox(height: 5),
-                        TextButton(onPressed: () {},
+                        TextButton(onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: const Text('Already have an account? Sign in!'))
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        _signUp();
+                      },
                       child: const Text('sign up')),
                     ElevatedButton(
                       onPressed: () {},

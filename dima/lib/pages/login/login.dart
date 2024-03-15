@@ -1,14 +1,22 @@
+import 'package:dima/auth/firebase_auth/auth_util.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+  
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  final AuthService _auth=AuthService();
   final _formKey=GlobalKey<FormState>();
+  
+  bool _isSigning=false;
 
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +48,7 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextFormField(
+                      controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'username',
                         hintText: 'username',
@@ -52,6 +61,7 @@ class _LoginState extends State<Login> {
                       children: [
                         TextFormField(
                           obscureText: true,
+                          controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'passwords',
                             hintText: 'passwords',
@@ -69,12 +79,16 @@ class _LoginState extends State<Login> {
                           },
                         ),
                         const SizedBox(height: 5),
-                        TextButton(onPressed: () {},
+                        TextButton(onPressed: () {
+                          Navigator.pushNamed(context, '/register');
+                        },
                         child: const Text('New user? Sign up!'))
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        _signIn();
+                      },
                       child: const Text('sign in')),
                     ElevatedButton(
                       onPressed: () {},
@@ -83,4 +97,28 @@ class _LoginState extends State<Login> {
           ),
         ));
   }
+
+void _signIn() async {
+    setState(() {
+      _isSigning = true;
+    });
+
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    setState(() {
+      _isSigning = false;
+    });
+
+    if (user != null) {
+      //.TODO: toast (o quel che è)
+      print("User is successfully signed in");
+      Navigator.pushNamed(context, "/home");
+    } else {
+      print("some error occured");
+    }
+  }
+
 }
