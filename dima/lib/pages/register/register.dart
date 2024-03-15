@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:dima/auth/firebase_auth/auth_util.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Register extends StatelessWidget {
+
+class Register extends StatefulWidget {
+
+  const Register({super.key});
+
+  @override
+  State<Register> createState() => _RegisterState();
+}
+
+class _RegisterState extends State<Register> {
+final AuthService _auth = AuthService();
+
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  bool isSigningUp = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +49,7 @@ class Register extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextFormField(
+                      controller: _usernameController,
                       decoration: InputDecoration(
                         labelText: 'username',
                         hintText: 'username',
@@ -73,5 +93,29 @@ class Register extends StatelessWidget {
                     ]))),
           ),
         ));
+  }
+
+  void _signUp() async {
+
+    setState(() {
+      isSigningUp = true;
+    });
+
+
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    setState(() {
+      isSigningUp = false;
+    });
+
+    if (user != null) {
+      print("Sign up successful");
+    } else {
+      print("Sign up failed");
+    }
   }
 }
