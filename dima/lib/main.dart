@@ -1,3 +1,4 @@
+import 'package:dima/pages/map/map_screen.dart';
 import 'package:dima/pages/register/register.dart';
 import 'package:flutter/material.dart';
 import 'pages/login/login.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Login(),
+      home: MapScreen(),
       routes:{
         '/register': (context)=>Register(),
         '/login': (context)=>Login()
