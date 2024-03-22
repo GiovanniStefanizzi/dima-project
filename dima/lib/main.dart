@@ -22,7 +22,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MapScreen(),
+      title: 'Dima',
+      theme: ThemeData(
+        useMaterial3: true,
+        primarySwatch: Colors.green,
+      ),
+      home: Login(),
       routes:{
         '/register': (context)=>Register(),
         '/login': (context)=>Login()
