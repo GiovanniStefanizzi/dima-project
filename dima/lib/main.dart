@@ -22,13 +22,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Login(),
       title: 'Dima',
       theme: ThemeData(
         useMaterial3: true,
-        primarySwatch: Colors.green,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.green,
+        ),
+        scaffoldBackgroundColor: Colors.white,
       ),
-      home: Login(),
+      home: MapScreen(),
       routes:{
         '/register': (context)=>Register(),
         '/login': (context)=>Login()
