@@ -49,6 +49,16 @@ final AuthService _auth = AuthService();
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextFormField(
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                        labelText: 'username',
+                        hintText: 'username',
+                        border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25)
+                        )
+                      ),
+                    ),
+                    TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'email',
@@ -111,7 +121,7 @@ final AuthService _auth = AuthService();
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    User? user = await _auth.signUpWithEmailAndPassword(username, email, password);
 
     setState(() {
       isSigningUp = false;

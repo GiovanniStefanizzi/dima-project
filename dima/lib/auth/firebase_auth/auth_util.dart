@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dima/firestore/firestore.dart';
+import 'package:dima/models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -7,12 +9,15 @@ class AuthService {
 
 
   // sign up with email and password
-  Future <User?> signUpWithEmailAndPassword(String email, String password) async {
+  Future <User?> signUpWithEmailAndPassword( String username, String email, String password) async {
     
     try {
       final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,);
+
+        User_model user = User_model(uid: credential.user!.uid, email: email, username: username);
+        await Firestore().writeUser(user.toMap());
       return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -21,7 +26,7 @@ class AuthService {
         print('The account already exists for that email.');
       }
     } catch (e) {
-    print(e);
+      print(e);
     }
   }
 

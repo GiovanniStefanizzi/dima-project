@@ -1,9 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dima/models/field_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:dima/firestore/firestore.dart';
 
 class MapScreen extends StatefulWidget{
 
@@ -14,7 +19,11 @@ class MapScreen extends StatefulWidget{
 class _MapScreenState extends State<MapScreen>{
 
   final Completer<GoogleMapController> _controller = Completer();
-  final TextEditingController _dataController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _fieldNameController = TextEditingController();
+  final TextEditingController _cropTypeController = TextEditingController();
+  bool _frostController = false;
+  bool _hailController = false;
 
 
   Set<Marker> _markers = Set<Marker>();
@@ -138,16 +147,36 @@ void _addPoint(LatLng point){
 Future<void> _selectDate() async {
   DateTime? picked = await showDatePicker(
     context: context,
+    initialDate: DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2300)
     );
 
     if(picked!=null){
       setState(() {
-        _dataController.text = picked.toString().split(" ")[0];
+        _dateController.text = picked.toString().split(" ")[0];
       });
     }
-}
+  }
+
+  Future<void> _createField() async {
+    String name = _fieldNameController.text;
+    String cropType = _cropTypeController.text;
+    DateTime datePlanted = DateTime.parse(_dateController.text);
+    bool hailAlert = _hailController;
+    bool frostAlert = _frostController;
+    List<GeoPoint> points = _convertToGeoPoint(_polygonLatLongs);
+    Field_model field=Field_model(name: name , cropType: cropType, datePlanted: datePlanted, hailAlert: hailAlert, frostAlert: frostAlert, points: points);
+    await Firestore().writeField(field.toMap());
+  }
+
+  List<GeoPoint> _convertToGeoPoint(List<LatLng> points){
+    List<GeoPoint> geoPoints = <GeoPoint>[];
+    for(LatLng point in points){
+      geoPoints.add(GeoPoint(point.latitude, point.longitude));
+    }
+    return geoPoints;
+  }
 
 
   @override
@@ -166,20 +195,26 @@ Future<void> _selectDate() async {
               child:
                 Stack(
                   children: [   
-                    
+                  
                     GoogleMap(
-                    initialCameraPosition: _initialPosition,
-                    onMapCreated: (GoogleMapController controller)
-                    {
-                      _controller.complete(controller);
-                    },
-                    mapType: MapType.hybrid,
-                    markers: _markers,
-                    polygons: _polygons,
-                    onTap: (point){ 
-                      _addPoint(point);
-                    },
+                      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                        new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
+                      ].toSet(),
+
+
+                      initialCameraPosition: _initialPosition,
+                      onMapCreated: (GoogleMapController controller)
+                      {
+                        _controller.complete(controller);
+                      },
+                      mapType: MapType.hybrid,
+                      markers: _markers,
+                      polygons: _polygons,
+                      onTap: (point){ 
+                        _addPoint(point);
+                      },
                     ),
+                    
                     Positioned(
                       child:
                         Container( 
@@ -242,6 +277,7 @@ Future<void> _selectDate() async {
                   const SizedBox(height: 5),
                   Form(child:
                     TextField(
+                      controller: _fieldNameController,
                       decoration: InputDecoration(
                         hintText: 'Field name',
                         filled: true,
@@ -270,6 +306,7 @@ Future<void> _selectDate() async {
                 const SizedBox(height: 5),
                   Form(child:
                     TextField(
+                      controller: _cropTypeController,
                       decoration: InputDecoration(
                         hintText: 'Crop type',
                         filled: true,
@@ -298,7 +335,7 @@ Future<void> _selectDate() async {
                 const SizedBox(height: 5),
                   Form(child:
                     TextField(
-                      controller: _dataController,
+                      controller: _dateController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.calendar_month),
                         hintText: 'Seeding date',
@@ -321,6 +358,49 @@ Future<void> _selectDate() async {
                       },
                     ),
                   ), 
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    const Text("Enable frost notification"),
+                    Switch(
+                      value: _frostController,
+                      inactiveTrackColor: Colors.grey,
+                      inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
+                      activeTrackColor: Color.fromARGB(255, 153, 208, 3),
+                      activeColor: const Color.fromARGB(255, 77, 115, 78),
+                      onChanged: (bool value){
+                        setState(() {
+                          _frostController = value;
+                        });
+                      }),
+                      
+                  ],),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                    children: [
+                    const Text("Enable hail notification"),
+                    Switch(
+                      value: _hailController,
+                      inactiveTrackColor: Colors.grey,
+                      inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
+                      activeTrackColor: Color.fromARGB(255, 153, 208, 3),
+                      activeColor: const Color.fromARGB(255, 77, 115, 78),
+                      onChanged: (bool value){
+                        setState(() {
+                          _hailController = value;
+                        });
+                      }),
+                  const SizedBox(height: 20),
+
+                  ],),
+                  ElevatedButton(
+                    onPressed:(){
+                      _createField();
+                    },
+                    child: const Icon(Icons.save),
+                  )
                 ],
                 ),
             )
