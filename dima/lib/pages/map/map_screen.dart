@@ -63,7 +63,7 @@ class _MapScreenState extends State<MapScreen>{
       polygonId: PolygonId(polygonIdVal),
       points: _polygonLatLongs,
       strokeWidth: 2,
-      fillColor: Colors.green.withOpacity(0.2),));
+      fillColor: Colors.green.withOpacity(0.4),));
   }
 
  bool _isNotSimplePolygon(List<LatLng> polygon){
@@ -135,13 +135,7 @@ class _MapScreenState extends State<MapScreen>{
 void _addPoint(LatLng point){
   _setMarker(point);
   _polygonLatLongs.add(point);
-  if(_isNotSimplePolygon(_polygonLatLongs)){
-    print("errore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    _polygonLatLongs.removeLast();
-    }
-  else{
-    _setPolygon();
-    }                 
+  if(_polygons.isEmpty) _setPolygon();         
 }
 
 Future<void> _selectDate() async {
@@ -157,9 +151,9 @@ Future<void> _selectDate() async {
         _dateController.text = picked.toString().split(" ")[0];
       });
     }
-  }
+}
 
-  Future<void> _createField() async {
+Future<void> _createField() async {
     String name = _fieldNameController.text;
     String cropType = _cropTypeController.text;
     DateTime datePlanted = DateTime.parse(_dateController.text);
@@ -195,26 +189,26 @@ Future<void> _selectDate() async {
               child:
                 Stack(
                   children: [   
-                  
+                    
                     GoogleMap(
-                      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
                         new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
                       ].toSet(),
 
 
-                      initialCameraPosition: _initialPosition,
-                      onMapCreated: (GoogleMapController controller)
-                      {
-                        _controller.complete(controller);
-                      },
-                      mapType: MapType.hybrid,
-                      markers: _markers,
-                      polygons: _polygons,
-                      onTap: (point){ 
-                        _addPoint(point);
-                      },
+                    initialCameraPosition: _initialPosition,
+                    onMapCreated: (GoogleMapController controller)
+                    {
+                      _controller.complete(controller);
+                    },
+                    mapType: MapType.hybrid,
+                    markers: _markers,
+                    polygons: _polygons,
+                    onTap: (point){ 
+                      _addPoint(point);
+                    },
                     ),
-                    
+
                     Positioned(
                       child:
                         Container( 
@@ -251,7 +245,12 @@ Future<void> _selectDate() async {
                       left: 15,
                       child: FloatingActionButton(onPressed:(){
                         setState(() {
-                          _polygonLatLongs.removeLast();
+                          if(_polygonLatLongs.isNotEmpty) {
+                            _polygonLatLongs.removeLast();
+                            if(_polygonLatLongs.isEmpty){
+                              _polygons.remove(_polygons.elementAt(0));
+                            }
+                          }
                         });
                       },
                       child: const Icon(
@@ -362,19 +361,19 @@ Future<void> _selectDate() async {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                    const Text("Enable frost notification"),
-                    Switch(
-                      value: _frostController,
-                      inactiveTrackColor: Colors.grey,
-                      inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
-                      activeTrackColor: Color.fromARGB(255, 153, 208, 3),
-                      activeColor: const Color.fromARGB(255, 77, 115, 78),
-                      onChanged: (bool value){
-                        setState(() {
-                          _frostController = value;
-                        });
-                      }),
-                      
+                      const Text("Enable frost notification"),
+                      Switch(
+                        value: _frostController,
+                        inactiveTrackColor: Colors.grey,
+                        inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
+                        activeTrackColor: Color.fromARGB(255, 153, 208, 3),
+                        activeColor: const Color.fromARGB(255, 77, 115, 78),
+                        onChanged: (bool value){
+                          setState(() {
+                            _frostController = value;
+                          });
+                        }),
+                        
                   ],),
                   const SizedBox(height: 20),
                   Row(
@@ -392,12 +391,19 @@ Future<void> _selectDate() async {
                           _hailController = value;
                         });
                       }),
-                  const SizedBox(height: 20),
+                  
 
-                  ],),
+                  ],
+                  ),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed:(){
-                      _createField();
+                      if (_isNotSimplePolygon(_polygonLatLongs)){
+                        print("errorone");
+                      }
+                      else{
+                        _createField();
+                      }
                     },
                     child: const Icon(Icons.save),
                   )
