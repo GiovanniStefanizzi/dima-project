@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'pages/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
+import 'pages/field_details/field_details_screen.dart';
 
 // ...
 
@@ -34,7 +34,9 @@ class MyApp extends StatelessWidget {
       home: FieldListScreen(),
       routes:{
         '/register': (context)=>Register(),
-        '/login': (context)=>Login()
+        '/login': (context)=>Login(),
+        '/add_field': (context)=>MapScreen(),
+        '/field_details': (context)=>FieldDetailsScreen(),
       }
       );
   }

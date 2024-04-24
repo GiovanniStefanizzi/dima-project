@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/models/user_model.dart';
+import 'package:dima/open_meteo/open_meteo_utils.dart';
 import 'package:flutter/material.dart';
 
 class FieldListScreen extends StatefulWidget {
@@ -24,10 +26,34 @@ Future<List<Field_model>> getFields() async {
   }
 }
 
+GeoPoint getCentroid(List<GeoPoint> points) {
+  double x = 0;
+  double y = 0;
+  for (GeoPoint point in points) {
+    x += point.latitude;
+    y += point.longitude;
+  }
+  x /= points.length;
+  y /= points.length;
+  return GeoPoint(x, y);
+}
+
+
+
 class _MyWidgetState extends State<FieldListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the AddFieldScreen
+          Navigator.pushNamed(context, '/add_field');
+        },
+        child: Icon(Icons.add),
+      ),
+      appBar: AppBar(
+        title: Text('Fields'),
+      ),
       body: FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {
@@ -47,9 +73,50 @@ class _MyWidgetState extends State<FieldListScreen> {
                   // Build each item of the ListView using the Field_model
                   Field_model field = fields[index];
                   return ListTile(
+                    leading: Icon(Icons.map),
                     title: Text(field.name),
-                    subtitle: Text(field.cropType),
-                    // You can customize the ListTile as needed
+                    subtitle: Text(field.cropType) ,
+                    trailing: Wrap(
+                      children: [
+                      FutureBuilder(
+                        future: getWeatherCode(getCentroid(field.points)),
+                        builder: (context, AsyncSnapshot<int> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              width: 15,
+                              height: 15,
+                              child: CircularProgressIndicator( strokeWidth: 2,)
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return Image(image:AssetImage('assets/images/${snapshot.data}.png'), width: 50, height: 50);
+                          }
+                        },
+                      ),
+                      FutureBuilder(
+                      future: getTemperature(getCentroid(field.points)),
+                      builder: (context, AsyncSnapshot<double> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Container(
+                            width: 15,
+                            height: 15,
+                            child: CircularProgressIndicator( strokeWidth: 2,)
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Text('${snapshot.data}°C', style: TextStyle(fontSize: 15));
+                        }
+                      },
+                    ),
+                      ],
+                      
+                    ),
+                    onTap: () {
+                      // Navigate to the FieldDetailsScreen
+                      Navigator.pushNamed(context, '/field_details', arguments: field);
+                    },
                   );
                 },
               );
