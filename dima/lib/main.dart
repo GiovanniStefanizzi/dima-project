@@ -1,3 +1,4 @@
+import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/pages/map/map_screen.dart';
 import 'package:dima/pages/register/register.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: MapScreen(),
+      home: FieldListScreen(),
       routes:{
         '/register': (context)=>Register(),
         '/login': (context)=>Login()

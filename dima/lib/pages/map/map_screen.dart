@@ -156,7 +156,7 @@ Future<void> _selectDate() async {
 Future<void> _createField() async {
     String name = _fieldNameController.text;
     String cropType = _cropTypeController.text;
-    DateTime datePlanted = DateTime.parse(_dateController.text);
+    String datePlanted = _dateController.text;
     bool hailAlert = _hailController;
     bool frostAlert = _frostController;
     List<GeoPoint> points = _convertToGeoPoint(_polygonLatLongs);

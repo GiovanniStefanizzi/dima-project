@@ -16,7 +16,7 @@ class AuthService {
         email: email,
         password: password,);
 
-        User_model user = User_model(uid: credential.user!.uid, email: email, username: username);
+        User_model user = User_model.createUser(uid: credential.user!.uid, email: email, username: username);
         await Firestore().writeUser(user.toMap());
       return credential.user;
     } on FirebaseAuthException catch (e) {
@@ -71,4 +71,17 @@ class AuthService {
       return null;
     }
   }
+
+  
+String? getCurrentUserId() {
+  User? user = FirebaseAuth.instance.currentUser;
+  
+  if (user != null) {
+    String userId = user.uid;
+    return userId;
+  } else {
+    print('User is not signed in.');
+    return null;
+  }
+}
 }

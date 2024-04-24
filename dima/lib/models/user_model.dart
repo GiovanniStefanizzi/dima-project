@@ -10,13 +10,18 @@ class User_model{
   
 
 
-  User_model({required this.uid, required this.email, required this.username});
+  User_model({required this.uid, required this.email, required this.username, required this.fields});
+  User_model.createUser({required this.uid, required this.email, required this.username});
 
   factory User_model.fromMap(Map<String, dynamic> data) {
+
     return User_model(
-      uid: data['_uid'],
+      uid: data['uid'],
       email: data['email'],
       username: data['username'],
+      fields:  List<Field_model>.from((data['fields'] ?? []).map((fieldJson) {
+        return Field_model.fromMap(fieldJson);
+      })),
     );
   }
 
@@ -26,5 +31,9 @@ class User_model{
       'email': email,
       'username': username,
     };
+  }
+
+  List<Field_model> getFields(){
+    return fields;
   }
 }
