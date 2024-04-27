@@ -10,7 +10,7 @@ Future<double> getTemperature(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     double temp = data['current']['temperature_2m'];
-    print('RESPONSE:'+temp.toString());
+    //print('RESPONSE:'+temp.toString());
     return temp;
   } else {
     throw HttpException('Failed to load temperature');
@@ -24,8 +24,8 @@ Future<int> getWeatherCode(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     int code = data['current']['weathercode'];
-    print('RESPONSE:'+code.toString());
-    return code;
+    print('RESPONSE:'+code.toString()+" CONVERSIOED:"+convertCodesToIcons(code).toString());
+    return convertCodesToIcons(code);
   } else {
     throw HttpException('Failed to load weather code');
   }
@@ -33,15 +33,15 @@ Future<int> getWeatherCode(GeoPoint point) async {
 
 int convertCodesToIcons(int weatherCode){
   switch (weatherCode) {
-    case 0: return 1;                           // Clear sky
-    case (1, 2, 3): return 2;                   // Few clouds
-    case (45, 48): return 3;                    // Fog
-    case (51,53,55): return 4;                  // Drizzle
-    case (56,57): return 5;                     // Freezing Rain
-    case (61, 63, 65): return 6;                // Rain
-    case (71, 73, 75, 77, 85, 86): return 7;    // Snow
-    case (80, 81, 82): return 8;                // Rain showers
-    case (95, 96, 99): return 9;                // Thunderstorm
-    default: return 0;                          // Unknown
+    case 0: return 1;                                  // Clear sky
+    case (1 || 2 || 3): return 2;                      // Few clouds
+    case (45 || 48): return 3;                         // Fog
+    case (51 || 53 || 55): return 4;                   // Drizzle
+    case (56 || 57): return 5;                         // Freezing Rain
+    case (61 || 63 || 65): return 6;                   // Rain
+    case (71 || 73 || 75 || 77 || 85 || 86): return 7; // Snow
+    case (80 || 81 || 82): return 8;                   // Rain showers
+    case (95 || 96 || 99): return 9;                   // Thunderstorm
+    default: return 0;                                 // Unknown
   }
 }
