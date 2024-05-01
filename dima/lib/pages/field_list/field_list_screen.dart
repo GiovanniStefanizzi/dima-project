@@ -76,7 +76,9 @@ class _MyWidgetState extends State<FieldListScreen> {
                     leading: Icon(Icons.map),
                     title: Text(field.name),
                     subtitle: Text(field.cropType) ,
-                    trailing: Wrap(
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      
                       children: [
                       FutureBuilder(
                         future: getWeatherCode(getCentroid(field.points)),
@@ -85,7 +87,7 @@ class _MyWidgetState extends State<FieldListScreen> {
                             return Container(
                               width: 15,
                               height: 15,
-                              child: CircularProgressIndicator( strokeWidth: 2,)
+                              //child: CircularProgressIndicator( strokeWidth: 2,)
                             );
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
@@ -106,7 +108,13 @@ class _MyWidgetState extends State<FieldListScreen> {
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
-                          return Text('${snapshot.data}°C', style: TextStyle(fontSize: 15));
+                          return Container(
+                            width: 45,
+                            height: 25,
+                            child: Text(
+                              '${snapshot.data}°C', style: TextStyle(fontSize: 15)
+                            )
+                          );
                         }
                       },
                     ),
