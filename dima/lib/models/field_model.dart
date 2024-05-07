@@ -56,4 +56,4 @@ class Field_model {
       'points': points,
     };
   }
-  }
+}

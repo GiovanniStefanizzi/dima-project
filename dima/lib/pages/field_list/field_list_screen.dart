@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/models/user_model.dart';
-import 'package:dima/open_meteo/open_meteo_utils.dart';
+import 'package:dima/api/open_meteo/open_meteo_utils.dart';
+import 'package:dima/utils/field_utils.dart';
 import 'package:flutter/material.dart';
 
 class FieldListScreen extends StatefulWidget {
@@ -26,17 +27,7 @@ Future<List<Field_model>> getFields() async {
   }
 }
 
-GeoPoint getCentroid(List<GeoPoint> points) {
-  double x = 0;
-  double y = 0;
-  for (GeoPoint point in points) {
-    x += point.latitude;
-    y += point.longitude;
-  }
-  x /= points.length;
-  y /= points.length;
-  return GeoPoint(x, y);
-}
+
 
 
 
@@ -81,7 +72,7 @@ class _MyWidgetState extends State<FieldListScreen> {
                       
                       children: [
                       FutureBuilder(
-                        future: getWeatherCode(getCentroid(field.points)),
+                        future: getWeatherCode(Field_utils.getCentroid(field.points)),
                         builder: (context, AsyncSnapshot<int> snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return Container(
@@ -97,7 +88,7 @@ class _MyWidgetState extends State<FieldListScreen> {
                         },
                       ),
                       FutureBuilder(
-                      future: getTemperature(getCentroid(field.points)),
+                      future: getTemperature(Field_utils.getCentroid(field.points)),
                       builder: (context, AsyncSnapshot<double> snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Container(
