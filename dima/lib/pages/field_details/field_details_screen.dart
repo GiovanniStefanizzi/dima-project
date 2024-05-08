@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/api/earthengine/earthengine.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/utils/field_utils.dart';
@@ -5,8 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
+
 
 class FieldDetailsScreen extends StatefulWidget {
   const FieldDetailsScreen({super.key});
@@ -18,11 +21,42 @@ class FieldDetailsScreen extends StatefulWidget {
 class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
+  
+  LatLngBounds getPolygonBounds(List<GeoPoint> points) {
+    //connvert points to latlng
+    List<LatLng> latLngPoints = points.map((point) => LatLng(point.latitude, point.longitude)).toList();
+    
+    double minLat = latLngPoints[0].latitude;
+    double maxLat = latLngPoints[0].latitude;
+    double minLng = latLngPoints[0].longitude;
+    double maxLng = latLngPoints[0].longitude;
+
+    for (LatLng point in latLngPoints) {
+      if (point.latitude < minLat) {
+        minLat = point.latitude;
+      }
+      if (point.latitude > maxLat) {
+        maxLat = point.latitude;
+      }
+      if (point.longitude < minLng) {
+        minLng = point.longitude;
+      }
+      if (point.longitude > maxLng) {
+        maxLng = point.longitude;
+      }
+    }
+
+    return LatLngBounds(
+      LatLng(minLat, minLng),
+      LatLng(maxLat, maxLng),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
 
     final Field_model field = ModalRoute.of(context)!.settings.arguments as Field_model;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(field.name),
@@ -31,21 +65,27 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
         children: [
           Container(
             height: MediaQuery.of(context).size.height*0.4,
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
-                zoom: Field_utils.calculateZoomLevel(field.points, context),
+            child: FlutterMap(
+              options: MapOptions(
+                initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
+                initialZoom: Field_utils.calculateZoomLevel(field.points, context),
               ),
-              mapType: MapType.hybrid,
-              polygons: <Polygon>{
-                Polygon(
-                  polygonId: PolygonId('field'),
-                  points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                  strokeWidth: 2,
-                  strokeColor: Colors.green,
-                  fillColor: Colors.green.withOpacity(0.2),
+              children: [
+                TileLayer(
+                  //isri imagery
+                  urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                  userAgentPackageName: 'dima',
                 ),
-              },
+                OverlayImageLayer(
+                  overlayImages: [
+                    OverlayImage(
+                      bounds: getPolygonBounds(field.points),
+                      opacity: 0.5,
+                      imageProvider: NetworkImage('https://earthengine.googleapis.com/v1/projects/ee-dima/thumbnails/7c7b08b4efabd233486262aff09ca77a-fd2ad11f57cb95c3f4ae4ce17ea82e2e:getPixels'),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
           Expanded(

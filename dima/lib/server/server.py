@@ -9,6 +9,16 @@ import ee
 app = Flask(__name__)
 @app.route('/api/ndvi', methods=['GET'])
 def get_data():
+    points = request.args.get('points')
+    #decode points(a json) into a list of geopoints
+    points = points.split(',')
+    points = list(map(float, points))
+    geopoints = []
+    for i in range(0, len(points), 2):
+        geopoints.append([points[i], points[i+1]])
+    print(geopoints)
+    #create a polygon from the geopoints
+    region = ee.Geometry.Polygon(geopoints)
     
     ee.Initialize(project='ee-dima')
 
