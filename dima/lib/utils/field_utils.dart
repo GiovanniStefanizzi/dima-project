@@ -83,4 +83,9 @@ class Field_utils{
 
     return zoom;
   }
+
+  static String encodeGeoPoints(List<GeoPoint> points) {
+    List<String> coordinates = points.map((point) => '${point.longitude},${point.latitude}').toList();
+    return coordinates.join('|');
+  }
 }

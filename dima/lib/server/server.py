@@ -9,37 +9,27 @@ import ee
 app = Flask(__name__)
 @app.route('/api/ndvi', methods=['GET'])
 def get_data():
+    geopoints = []
+    print('GET /api/ndvi')
     points = request.args.get('points')
     #decode points(a json) into a list of geopoints
-    points = points.split(',')
-    points = list(map(float, points))
-    geopoints = []
-    for i in range(0, len(points), 2):
-        geopoints.append([points[i], points[i+1]])
-    print(geopoints)
-    #create a polygon from the geopoints
-    region = ee.Geometry.Polygon(geopoints)
-    
+    points = points.split('|')
+    print(points)
+    for point in points:
+        geopoints.append(list(map(float, point.split(','))))
+    eegeopoints = []
+    eegeopoints.append(geopoints)
+    print(eegeopoints)
     ee.Initialize(project='ee-dima')
+    #create a polygon from the geopoints
+    region = ee.Geometry.Polygon(eegeopoints)
 
     s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
 
     #s2 = s2.filterDate('2020-01-01', '2020-12-31')
 
     s2 = s2.filterMetadata('CLOUDY_PIXEL_PERCENTAGE', 'less_than', 10)
-
-    region = ee.Geometry.Polygon(
-            [[[11.737929376400917, 43.51840451313068],
-            [11.740103639754658, 43.51718764867549],
-            [11.74089305072334, 43.518342362046205],
-            [11.741574199616315, 43.5182442286246],
-            [11.74159675421542, 43.519153592218395],
-            [11.73917439025756, 43.520340978034724],
-            [11.7384747898807, 43.5191455356352]]])
-
-
-
-
+    
     #s2 = s2.filterBounds(region)
 
     #s2 = s2.select(['B4', 'B8'])
@@ -50,7 +40,7 @@ def get_data():
     s2 = s2.visualize(min=0, max=1, palette=['red', 'yellow', 'green'])
     s2 = s2.clip(region)
 
-    url = s2.getThumbURL({'region': region, 'dimensions': 256, 'format': 'png'})
+    url = s2.getThumbURL({'region': region, 'dimensions': 128, 'format': 'png'})
     print(url)
     return jsonify({"link": url})
 

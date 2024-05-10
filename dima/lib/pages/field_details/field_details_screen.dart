@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/api/earthengine/earthengine.dart';
 import 'package:dima/models/field_model.dart';
+import 'package:dima/pages/field_details/maps_overlay.dart';
 import 'package:dima/utils/field_utils.dart';
+import 'package:dima/utils/map_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +25,19 @@ class FieldDetailsScreen extends StatefulWidget {
 class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
+  final List<Widget> _pages = [
+    Placeholder(),
+    Placeholder(),
+    // MeteoPage(),
+    // ActivityPage(),
+    MapsOverlayPage(),
+
+  ];
+  String _ndviUrl = '';
+  String _ndwiUrl = '';
+  String _eviUrl = '';
+  String _saviUrl = '';
+  String _laiUrl = '';
   
   LatLngBounds getPolygonBounds(List<GeoPoint> points) {
     //connvert points to latlng
@@ -53,6 +70,30 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      fetchMapUrls();
+    });
+  }
+
+  Future<void> fetchMapUrls() async {
+    final Field_model field = ModalRoute.of(context)!.settings.arguments as Field_model;
+    final _ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
+    // final _ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
+    // final _eviUrl = await getMap(field.points, MapOverlayType.evi);
+    // final _saviUrl = await getMap(field.points, MapOverlayType.savi);
+    // final _laiUrl = await getMap(field.points, MapOverlayType.lai);
+    setState(() {
+      this._ndviUrl = _ndviUrl;
+      // this._ndwiUrl = _ndwiUrl;
+      // this._eviUrl = _eviUrl;
+      // this._saviUrl = _saviUrl;
+      // this._laiUrl = _laiUrl;
+    });
+    }
+
+  @override
   Widget build(BuildContext context) {
 
     final Field_model field = ModalRoute.of(context)!.settings.arguments as Field_model;
@@ -81,7 +122,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                     OverlayImage(
                       bounds: getPolygonBounds(field.points),
                       opacity: 0.5,
-                      imageProvider: NetworkImage('https://earthengine.googleapis.com/v1/projects/ee-dima/thumbnails/7c7b08b4efabd233486262aff09ca77a-fd2ad11f57cb95c3f4ae4ce17ea82e2e:getPixels'),
+                      imageProvider: NetworkImage(_ndviUrl),
                     ),
                   ],
                 )
@@ -103,10 +144,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: Center(
-                  child: Text(
-                    "Page $index",
-                    style: TextStyle(fontSize: 24),
-                  ),
+                  child: _pages[index],
                 ),
               );
             },
@@ -154,24 +192,6 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
         ),
         ],
       ) ,
-      // body: FutureBuilder<String>(
-      //   future: getNDVI('http://10.0.2.2:5000/api/ndvi'),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return Center(
-      //         child: CircularProgressIndicator(),
-      //       );
-      //     } else if (snapshot.hasError) {
-      //       return Center(
-      //         child: Text('Error: ${snapshot.error}'),
-      //       );
-      //     } else {
-      //       return Center(
-      //         child: Image.network(snapshot.data!),
-      //       );
-      //     }
-      //   },
-      // ),
     );
   }
 }
