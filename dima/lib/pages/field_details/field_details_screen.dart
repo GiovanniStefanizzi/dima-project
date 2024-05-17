@@ -14,6 +14,7 @@ import 'package:flutter_map/flutter_map.dart';
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'package:dima/pages/field_details/meteo_details.dart';
 
 
 class FieldDetailsScreen extends StatefulWidget {
@@ -81,7 +82,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       fetchMapUrls();
     });
     _pages = [
-    Placeholder(),
+    MeteoDetailsWidget(),
     Placeholder(),
     // MeteoPage(),
     // ActivityPage(),
@@ -129,7 +130,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                   urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
                   userAgentPackageName: 'dima',
                 ),
-                _mapUrls[_mapType] == null ? Container(child: CircularProgressIndicator()) :
+                _mapUrls[_mapType] == null ? Container() :
                 OverlayImageLayer(
                   overlayImages: [
                     OverlayImage(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
@@ -43,5 +44,33 @@ int convertCodesToIcons(int weatherCode){
     case (80 || 81 || 82): return 8;                   // Rain showers
     case (95 || 96 || 99): return 9;                   // Thunderstorm
     default: return 0;                                 // Unknown
+  }
+}
+
+Future<double> getMaxTemperature(GeoPoint point) async {
+  var lon = point.longitude;
+  var lat = point.latitude;
+  var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=temperature_2m_max&timezone=Europe%2FBerlin&forecast_days=1'));
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body);
+    double temp = data['daily']['temperature_2m_max'][0];
+    print('RESPONSE:'+temp.toString());
+    return temp;
+  } else {
+    throw HttpException('Failed to load temperature');
+  }
+}
+
+Future<double> getMinTemperature(GeoPoint point) async {
+  var lon = point.longitude;
+  var lat = point.latitude;
+  var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=1'));
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body);
+    double temp = data['daily']['temperature_2m_min'][0];
+    print('RESPONSE:'+temp.toString());
+    return temp;
+  } else {
+    throw HttpException('Failed to load temperature');
   }
 }
