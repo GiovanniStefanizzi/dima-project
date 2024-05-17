@@ -12,7 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dima/firestore/firestore.dart'; 
 //import 'package:latlong2/latlong.dart';
-import 'package:uuid/uuid.dart';
+//import 'package:uuid/uuid.dart';
 import 'package:http/http.dart'as http;
 import 'package:location/location.dart';
 
@@ -32,7 +32,7 @@ class _MapScreenState extends State<MapScreen>{
   final TextEditingController _cropTypeController = TextEditingController();
   bool _frostController = false;
   bool _hailController = false;
-  String _sessionToken = Uuid().v4();
+  //String _sessionToken = Uuid().v4();
 
   Set<Marker> _markers = Set<Marker>();
   Set<Polygon> _polygons = Set<Polygon>();
@@ -52,10 +52,10 @@ class _MapScreenState extends State<MapScreen>{
   @override
   void initState() {
     super.initState();
-    _searchController.addListener((){
-      _onChanged();
-      }
-    );
+    // _searchController.addListener((){
+    //   _onChanged();
+    //   }
+    // );
     _setMarker(LatLng(45.47822174474001, 9.227324251700615));
     //get postition
     currentLocation.getLocation().then((LocationData value){
@@ -65,31 +65,31 @@ class _MapScreenState extends State<MapScreen>{
     });
   }
 
-  _onChanged() {
-    if (_sessionToken == null) {
-      setState(() {
-        _sessionToken = Uuid().v4();
-      });
-    }
-    getSuggestion(_searchController.text);
-  }
+  // _onChanged() {
+  //   if (_sessionToken == null) {
+  //     setState(() {
+  //       _sessionToken = Uuid().v4();
+  //     });
+  //   }
+  //   getSuggestion(_searchController.text);
+  // }
 
-  void getSuggestion(String input) async {
-    String kPLACES_API_KEY = "AIzaSyBgyp5fhb7cpVEWS2cESCVMcRG0d5PwhR4";
-    String type = '(regions)';
-    String baseURL =
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    String request =
-        '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
-    var response = await http.get(Uri.parse(request));
-    if (response.statusCode == 200) {
-      setState(() {
-        _placeList = json.decode(response.body)['predictions'];
-      });
-    } else {
-      throw Exception('Failed to load predictions');
-    }
-  }
+  // void getSuggestion(String input) async {
+  //   String kPLACES_API_KEY = "AIzaSyBgyp5fhb7cpVEWS2cESCVMcRG0d5PwhR4";
+  //   String type = '(regions)';
+  //   String baseURL =
+  //       'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+  //   String request =
+  //       '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+  //   var response = await http.get(Uri.parse(request));
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       _placeList = json.decode(response.body)['predictions'];
+  //     });
+  //   } else {
+  //     throw Exception('Failed to load predictions');
+  //   }
+  // }
 
   void _setMarker(LatLng point){
     setState(() {

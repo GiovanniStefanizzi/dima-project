@@ -1,2 +1,2 @@
 //create an enum
-enum MapOverlayType {ndvi, ndwi, evi, savi, lai }
+enum MapOverlayType {normal, ndvi, ndwi, evi, savi, lai }

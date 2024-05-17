@@ -26,10 +26,10 @@ class FieldDetailsScreen extends StatefulWidget {
 class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
-  MapOverlayType? _mapType;
+  MapOverlayType _mapType = MapOverlayType.normal;
   List<Widget> _pages = [];
 
-  void updateDataFromChild(MapOverlayType? newData) {
+  void updateDataFromChild(MapOverlayType newData) {
     setState(() {
       _mapType = newData;
       print(_mapType);
@@ -129,7 +129,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                   urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
                   userAgentPackageName: 'dima',
                 ),
-                _ndviUrl == '' ? Container(child:CircularProgressIndicator()) : 
+                _mapUrls[_mapType] == null ? Container(child: CircularProgressIndicator()) :
                 OverlayImageLayer(
                   overlayImages: [
                     OverlayImage(

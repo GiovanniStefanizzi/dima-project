@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class MapsOverlayPage extends StatefulWidget {
-  final Function(MapOverlayType?) updateParentData;
+  final Function(MapOverlayType) updateParentData;
 
   const MapsOverlayPage({required this.updateParentData});
 
@@ -12,7 +12,7 @@ class MapsOverlayPage extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MapsOverlayPage> {
-  MapOverlayType? _mapType;
+  MapOverlayType _mapType= MapOverlayType.normal;
 
   void updateParent() {
     widget.updateParentData(_mapType);
@@ -22,7 +22,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
   void initState() {
     super.initState();
     setState(() {
-      _mapType = null;
+      _mapType = MapOverlayType.normal;
     });
   }
 
@@ -39,12 +39,12 @@ class _MyWidgetState extends State<MapsOverlayPage> {
             children: [
               Text('normal'),
               Radio(
-                value: null,
+                value: MapOverlayType.normal,
                 groupValue: _mapType,
                 
                 onChanged: (value) {
                   setState(() {
-                    _mapType = value;
+                    _mapType = value!;
                     updateParent();
                   });
                 },
@@ -60,7 +60,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 groupValue: _mapType,
                 onChanged: (value) {
                   setState(() {
-                    _mapType = value;
+                    _mapType = value!;
                     updateParent();
                   });
                 },
@@ -76,7 +76,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 groupValue: _mapType,
                 onChanged: (value) {
                   setState(() {
-                    _mapType = value;
+                    _mapType = value!;
                     updateParent();
                   });
                 },
@@ -92,7 +92,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 groupValue: _mapType,
                 onChanged: (value) {
                   setState(() {
-                    _mapType = value;
+                    _mapType = value!;
                     updateParent();
                   });
                 },
@@ -108,7 +108,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 groupValue: _mapType,
                 onChanged: (value) {
                   setState(() {
-                    _mapType = value;
+                    _mapType = value!;
                     updateParent();
                   });
                 },
@@ -124,7 +124,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 groupValue: _mapType,
                 onChanged: (value) {
                   setState(() {
-                    _mapType = value;
+                    _mapType = value!;
                     updateParent();
                   });
                 },
