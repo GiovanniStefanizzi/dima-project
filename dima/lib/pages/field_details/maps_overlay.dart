@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class MapsOverlayPage extends StatefulWidget {
-  const MapsOverlayPage({super.key});
+  final Function(MapOverlayType?) updateParentData;
+
+  const MapsOverlayPage({required this.updateParentData});
 
   @override
   State<MapsOverlayPage> createState() => _MyWidgetState();
@@ -11,12 +13,46 @@ class MapsOverlayPage extends StatefulWidget {
 
 class _MyWidgetState extends State<MapsOverlayPage> {
   MapOverlayType? _mapType;
+
+  void updateParent() {
+    widget.updateParentData(_mapType);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _mapType = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: MediaQuery.of(context).size.width,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('normal'),
+              Radio(
+                value: null,
+                groupValue: _mapType,
+                
+                onChanged: (value) {
+                  setState(() {
+                    _mapType = value;
+                    updateParent();
+                  });
+                },
+              ),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('ndvi'),
               Radio(
@@ -25,12 +61,14 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 onChanged: (value) {
                   setState(() {
                     _mapType = value;
+                    updateParent();
                   });
                 },
               ),
             ],
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('ndwi'),
               Radio(
@@ -39,12 +77,14 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 onChanged: (value) {
                   setState(() {
                     _mapType = value;
+                    updateParent();
                   });
                 },
               ),
             ],
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('evi'),
               Radio(
@@ -53,12 +93,14 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 onChanged: (value) {
                   setState(() {
                     _mapType = value;
+                    updateParent();
                   });
                 },
               ),
             ],
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('savi'),
               Radio(
@@ -67,12 +109,14 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 onChanged: (value) {
                   setState(() {
                     _mapType = value;
+                    updateParent();
                   });
                 },
               ),
             ],
           ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text('lai'),
               Radio(
@@ -81,6 +125,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 onChanged: (value) {
                   setState(() {
                     _mapType = value;
+                    updateParent();
                   });
                 },
               ),

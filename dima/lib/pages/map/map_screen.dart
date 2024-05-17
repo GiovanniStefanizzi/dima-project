@@ -1,14 +1,21 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/models/field_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:dima/firestore/firestore.dart';
+import 'package:dima/firestore/firestore.dart'; 
+//import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart'as http;
+import 'package:location/location.dart';
+
 
 class MapScreen extends StatefulWidget{
 
@@ -19,16 +26,20 @@ class MapScreen extends StatefulWidget{
 class _MapScreenState extends State<MapScreen>{
 
   final Completer<GoogleMapController> _controller = Completer();
+  TextEditingController _searchController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _fieldNameController = TextEditingController();
   final TextEditingController _cropTypeController = TextEditingController();
   bool _frostController = false;
   bool _hailController = false;
-
+  String _sessionToken = Uuid().v4();
 
   Set<Marker> _markers = Set<Marker>();
   Set<Polygon> _polygons = Set<Polygon>();
   List<LatLng> _polygonLatLongs = <LatLng>[];
+  List<dynamic> _placeList = []; 
+  Location currentLocation = Location();
+  LatLng? currentLatLng;
 
   int _polygonIdCounter = 1;
 
@@ -41,8 +52,43 @@ class _MapScreenState extends State<MapScreen>{
   @override
   void initState() {
     super.initState();
-
+    _searchController.addListener((){
+      _onChanged();
+      }
+    );
     _setMarker(LatLng(45.47822174474001, 9.227324251700615));
+    //get postition
+    currentLocation.getLocation().then((LocationData value){
+      setState(() {
+        currentLatLng = LatLng(value.latitude!, value.longitude!);
+      });
+    });
+  }
+
+  _onChanged() {
+    if (_sessionToken == null) {
+      setState(() {
+        _sessionToken = Uuid().v4();
+      });
+    }
+    getSuggestion(_searchController.text);
+  }
+
+  void getSuggestion(String input) async {
+    String kPLACES_API_KEY = "AIzaSyBgyp5fhb7cpVEWS2cESCVMcRG0d5PwhR4";
+    String type = '(regions)';
+    String baseURL =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request =
+        '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+    var response = await http.get(Uri.parse(request));
+    if (response.statusCode == 200) {
+      setState(() {
+        _placeList = json.decode(response.body)['predictions'];
+      });
+    } else {
+      throw Exception('Failed to load predictions');
+    }
   }
 
   void _setMarker(LatLng point){
@@ -190,13 +236,14 @@ Future<void> _createField() async {
                 Stack(
                   children: [   
                     
+                    currentLatLng == null ? Container(child:CircularProgressIndicator()) : 
                     GoogleMap(
-gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-                        new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
-                      ].toSet(),
+                      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                                              new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
+                                            ].toSet(),
 
-
-                    initialCameraPosition: _initialPosition,
+                    initialCameraPosition: CameraPosition(target:  currentLatLng!, zoom: 15),
+                    
                     onMapCreated: (GoogleMapController controller)
                     {
                       _controller.complete(controller);
@@ -209,37 +256,59 @@ gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
                     },
                     ),
 
-                    Positioned(
-                      child:
-                        Container( 
-                          margin: const EdgeInsets.all(20),
-                          child:
-                            Row(
-                              children:[
-                                Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
-                                      hintText: 'Search',
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      contentPadding: EdgeInsets.all(10),
-                                      border: InputBorder.none,
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: BorderSide(color: Colors.grey),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: BorderSide(color: Colors.grey),
-                                      ),
-                                      suffixIcon: Icon(Icons.search),
-                                      ),
-                                    ),
-                                ),
-                              ]
-                            ),
-                        ),
-                    ),
+                    // Positioned(
+                    //   child:
+                    //     Container( 
+                    //       margin: const EdgeInsets.all(20),
+                    //       child:
+                    //         Column(
+                    //           children:[
+                    //             Container(
+                    //               child: TextField(
+                    //                 controller: _searchController,
+                    //                 decoration: InputDecoration(
+                    //                   hintText: 'Search',
+                    //                   filled: true,
+                    //                   fillColor: Colors.white,
+                    //                   contentPadding: EdgeInsets.all(10),
+                    //                   border: InputBorder.none,
+                    //                   enabledBorder: OutlineInputBorder(
+                    //                     borderRadius: BorderRadius.circular(20),
+                    //                     borderSide: BorderSide(color: Colors.grey),
+                    //                   ),
+                    //                   focusedBorder: OutlineInputBorder(
+                    //                     borderRadius: BorderRadius.circular(20),
+                    //                     borderSide: BorderSide(color: Colors.grey),
+                    //                   ),
+                    //                   suffixIcon: Icon(Icons.search),
+                    //                   ),
+                    //                 ),
+                    //             ),
+                    //             Container(
+                    //               height: 400,
+                    //               width: 400,
+                    //               child: ListView.builder(
+                    //                 shrinkWrap: true,
+                    //                 itemCount: _placeList.length,
+                    //                 itemBuilder: (context, index){
+                    //                   return Container(
+                    //                     color: Colors.white,
+                    //                     child: ListTile(
+                    //                       tileColor: Colors.white,
+                    //                       title: Text(_placeList[index]['description']),
+                    //                       onTap: (){
+                    //                         _searchController.text = _placeList[index]['description'];
+                    //                         _placeList = [];
+                    //                       },
+                    //                     ),
+                    //                   );
+                    //                 },
+                    //               ),
+                    //             ),
+                    //           ]
+                    //         ),
+                    //     ),
+                    // ),
                     Positioned(
                       bottom: 30,
                       left: 15,

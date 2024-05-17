@@ -25,14 +25,15 @@ class FieldDetailsScreen extends StatefulWidget {
 class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
-  final List<Widget> _pages = [
-    Placeholder(),
-    Placeholder(),
-    // MeteoPage(),
-    // ActivityPage(),
-    MapsOverlayPage(),
+  MapOverlayType? _mapType;
+  List<Widget> _pages = [];
 
-  ];
+  void updateDataFromChild(MapOverlayType? newData) {
+    setState(() {
+      _mapType = newData;
+      print(_mapType);
+    });
+  }
   String _ndviUrl = '';
   String _ndwiUrl = '';
   String _eviUrl = '';
@@ -75,6 +76,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     Future.delayed(Duration.zero, () {
       fetchMapUrls();
     });
+    _pages = [
+    Placeholder(),
+    Placeholder(),
+    // MeteoPage(),
+    // ActivityPage(),
+    MapsOverlayPage(updateParentData: updateDataFromChild),
+  ];
   }
 
   Future<void> fetchMapUrls() async {
@@ -117,6 +125,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                   urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
                   userAgentPackageName: 'dima',
                 ),
+                _ndviUrl == '' ? Container(child:CircularProgressIndicator()) : 
                 OverlayImageLayer(
                   overlayImages: [
                     OverlayImage(
