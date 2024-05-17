@@ -11,6 +11,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
@@ -34,11 +35,14 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       print(_mapType);
     });
   }
-  String _ndviUrl = '';
-  String _ndwiUrl = '';
-  String _eviUrl = '';
-  String _saviUrl = '';
-  String _laiUrl = '';
+  Map<MapOverlayType, String> _mapUrls = {
+    MapOverlayType.ndvi: '',
+    MapOverlayType.ndwi: '',
+    MapOverlayType.evi: '',
+    MapOverlayType.savi: '',
+    MapOverlayType.lai: '',
+  };
+  
   
   LatLngBounds getPolygonBounds(List<GeoPoint> points) {
     //connvert points to latlng
@@ -93,7 +97,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     // final _saviUrl = await getMap(field.points, MapOverlayType.savi);
     // final _laiUrl = await getMap(field.points, MapOverlayType.lai);
     setState(() {
-      this._ndviUrl = _ndviUrl;
+      _mapUrls[MapOverlayType.ndvi] = _ndviUrl;
       // this._ndwiUrl = _ndwiUrl;
       // this._eviUrl = _eviUrl;
       // this._saviUrl = _saviUrl;
@@ -131,7 +135,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                     OverlayImage(
                       bounds: getPolygonBounds(field.points),
                       opacity: 0.5,
-                      imageProvider: NetworkImage(_ndviUrl),
+                      imageProvider: NetworkImage(_mapUrls[_mapType]!),
                     ),
                   ],
                 )
