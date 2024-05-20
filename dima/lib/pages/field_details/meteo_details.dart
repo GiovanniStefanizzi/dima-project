@@ -1,7 +1,9 @@
 import 'package:dima/api/open_meteo/open_meteo_utils.dart';
 import 'package:dima/models/field_model.dart';
+import 'package:dima/pages/field_details/forecast.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:dima/models/meteo_forecast_model.dart';
 
 class MeteoDetailsWidget extends StatefulWidget {
   const MeteoDetailsWidget({super.key});
@@ -100,58 +102,109 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
               border: Border(bottom: BorderSide(color: Color.fromARGB(255, 212, 221, 212), width: 1)),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  child: FutureBuilder(
-                    future: getDailyPrecipitation(Field_utils.getCentroid(field.points)),
-                    builder: (context, AsyncSnapshot<double> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container(
-                          width: 15,
-                          height: 15,
-                          child: CircularProgressIndicator( strokeWidth: 2,)
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Container(
-                          width: 100,
-                          height: 45,
-                          child: Text(
-                            '${snapshot.data}mm', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.green)
-                          )
-                        );
-                      }
-                    },
+                  margin: const EdgeInsets.only(left: 20),
+                  child: Row(
+                    children: [
+                      Image(image: AssetImage('assets/images/precipitations.png'), width: 30, height: 30),
+                      FutureBuilder(
+                        future: getDailyPrecipitation(Field_utils.getCentroid(field.points)),
+                        builder: (context, AsyncSnapshot<double> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              width: 15,
+                              height: 15,
+                              child: CircularProgressIndicator( strokeWidth: 2,)
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return Container(
+                              width: 100,
+                              height: 45,
+                              child: Text(
+                                '${snapshot.data}mm', style: TextStyle(fontSize: 25)
+                              )
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                   ),
                 Container(
-                  child: FutureBuilder(
-                    future: getCurrentHumidity(Field_utils.getCentroid(field.points)),
-                    builder: (context, AsyncSnapshot<int> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container(
-                          width: 15,
-                          height: 15,
-                          child: CircularProgressIndicator( strokeWidth: 2,)
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Container(
-                          width: 100,
-                          height: 45,
-                          child: Text(
-                            '${snapshot.data}%', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.orange)
-                          )
-                        );
-                      }
-                    },
+                  margin: const EdgeInsets.only(right: 20),
+                  child: Row(
+                    children: [
+                      Image(image: AssetImage('assets/images/humidity.png'), width: 30, height: 30),
+                      FutureBuilder(
+                        future: getCurrentHumidity(Field_utils.getCentroid(field.points)),
+                        builder: (context, AsyncSnapshot<int> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Container(
+                              width: 15,
+                              height: 15,
+                              child: CircularProgressIndicator( strokeWidth: 2,)
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return Container(
+                              width: 100,
+                              height: 45,
+                              child: Text(
+                                '${snapshot.data}%', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.orange)
+                              )
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   )
                 )
               ],
             ),
-          )
+          ),
+          Row(
+            children: [
+              FutureBuilder(
+                future: getWeatherForecast(Field_utils.getCentroid(field.points)), 
+                builder: (context, AsyncSnapshot<MeteoForecast_model> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                      width: 15,
+                      height: 15,
+                      child: CircularProgressIndicator( strokeWidth: 2,)
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Builder(builder: (context) {
+                      return Container(
+                        
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return ForecastWidget(
+                              weatherCode: snapshot.data!.weatherCode[index],
+                              minTemp: snapshot.data!.minTemp[index],
+                              maxTemp: snapshot.data!.maxTemp[index],
+                              precipitation: snapshot.data!.precipitation[index],
+                            );
+                          },
+                        ),
+                      );
+                    } 
+                    );
+                  }
+                },
+                )
+            ],
+            )
+          
         ],
       )
     );
