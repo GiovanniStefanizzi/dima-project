@@ -74,3 +74,31 @@ Future<double> getMinTemperature(GeoPoint point) async {
     throw HttpException('Failed to load temperature');
   }
 }
+
+Future<double> getDailyPrecipitation(GeoPoint point) async{
+  var lon = point.longitude;
+  var lat = point.latitude;
+  var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=precipitation_sum&timezone=Europe%2FBerlin&forecast_days=1'));
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body);
+    double precipitation = data['daily']['precipitation_sum'][0];
+    print('RESPONSE:'+precipitation.toString());
+    return precipitation;
+  } else {
+    throw HttpException('Failed to load precipitation');
+  } 
+}
+
+Future<int> getCurrentHumidity(GeoPoint point) async {
+  var lon = point.longitude;
+  var lat = point.latitude;
+  var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=relative_humidity_2m&timezone=Europe%2FBerlin&forecast_days=1'));
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body);
+    int humidity = data['current']['relative_humidity_2m'];
+    print('RESPONSE:'+humidity.toString());
+    return humidity;
+  } else {
+    throw HttpException('Failed to load humidity');
+  }
+} 

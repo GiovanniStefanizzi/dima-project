@@ -91,12 +91,69 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
                       );
                     }
                   },
-                ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Color.fromARGB(255, 212, 221, 212), width: 1)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  child: FutureBuilder(
+                    future: getDailyPrecipitation(Field_utils.getCentroid(field.points)),
+                    builder: (context, AsyncSnapshot<double> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          width: 15,
+                          height: 15,
+                          child: CircularProgressIndicator( strokeWidth: 2,)
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return Container(
+                          width: 100,
+                          height: 45,
+                          child: Text(
+                            '${snapshot.data}mm', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.green)
+                          )
+                        );
+                      }
+                    },
+                  ),
+                  ),
+                Container(
+                  child: FutureBuilder(
+                    future: getCurrentHumidity(Field_utils.getCentroid(field.points)),
+                    builder: (context, AsyncSnapshot<int> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          width: 15,
+                          height: 15,
+                          child: CircularProgressIndicator( strokeWidth: 2,)
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return Container(
+                          width: 100,
+                          height: 45,
+                          child: Text(
+                            '${snapshot.data}%', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.orange)
+                          )
+                        );
+                      }
+                    },
+                  )
+                )
               ],
             ),
           )
-        ]
-        ,)
+        ],
+      )
     );
   }
 }
