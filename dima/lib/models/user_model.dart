@@ -16,7 +16,7 @@ class User_model{
   factory User_model.fromMap(Map<String, dynamic> data) {
 
     return User_model(
-      uid: data['uid'],
+      uid: data['_uid'],
       email: data['email'],
       username: data['username'],
       fields:  List<Field_model>.from((data['fields'] ?? []).map((fieldJson) {

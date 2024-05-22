@@ -19,16 +19,17 @@ class Firestore{
 
   //write new field
   Future writeField(Map<String, dynamic> field) async {
-    //String? userId = AuthService().getCurrentUserId();
-    String userId="0IjeLFlmtydMGsFarrTs6l5Nt0r1";
+    String? userId = AuthService().getCurrentUserId();
+    print( "userId: $userId");
+    //String userId="0IjeLFlmtydMGsFarrTs6l5Nt0r1";
     Map<String, dynamic> newElement = field; 
     try{
         CollectionReference users = FirebaseFirestore.instance.collection("users");
-        QuerySnapshot querySnapshot = await users.where('uid', isEqualTo: userId).get();
+        QuerySnapshot querySnapshot = await users.where('_uid', isEqualTo: userId).get();
         DocumentReference documentReference = querySnapshot.docs.first.reference;
-        documentReference.update({
+        await documentReference.update({
           "fields":FieldValue.arrayUnion([newElement])
-        });
+        });        
     }
     catch (e){
       print(e.toString());
@@ -37,12 +38,13 @@ class Firestore{
   } 
 
   Future<User_model?> getCurrentUser() async {
-    //String? userId=AuthService().getCurrentUserId();
-    String userId="0IjeLFlmtydMGsFarrTs6l5Nt0r1";
+    String? userId=AuthService().getCurrentUserId();
+    print( "userId: $userId");
+    //String userId="0IjeLFlmtydMGsFarrTs6l5Nt0r1";
 
     try{
       CollectionReference users = FirebaseFirestore.instance.collection("users");
-      QuerySnapshot querySnapshot = await users.where('uid', isEqualTo: userId).get();
+      QuerySnapshot querySnapshot = await users.where('_uid', isEqualTo: userId).get();
       QueryDocumentSnapshot firstDocument = querySnapshot.docs.first;
       DocumentSnapshot documentSnapshot = firstDocument as DocumentSnapshot;
       if(documentSnapshot.exists){

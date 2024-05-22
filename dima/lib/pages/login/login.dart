@@ -113,7 +113,7 @@ void _signIn() async {
     });
 
     if (user != null) {
-      //.TODO: toast (o quel che è)
+      //TODO: toast (o quel che è)
       print("User is successfully signed in");
       Navigator.pushNamed(context, "/home");
     } else {

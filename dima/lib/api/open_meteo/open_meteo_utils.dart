@@ -126,12 +126,17 @@ Future<MeteoForecast_model> getWeatherForecast(GeoPoint point) async {
     .map((item) => item as int)
     .toList()
     .sublist(1,4);
+    List<String> date = (data['daily']['time'] as List)
+    .map((item) => (item as String).substring(5,10))
+    .toList()
+    .sublist(1,4);
 
     print("WEATHER CODES: "+weatherCode.toString());
     print("MIN TEMP: "+minTemp.toString());
     print("MAX TEMP: "+maxTemp.toString());
     print("PRECIPITATION: "+precipitation.toString());
-    return MeteoForecast_model(weatherCode: weatherCode, minTemp: minTemp, maxTemp: maxTemp, precipitation: precipitation);
+    print("DATE: "+date.toString());
+    return MeteoForecast_model(weatherCode: weatherCode, minTemp: minTemp, maxTemp: maxTemp, precipitation: precipitation, date: date);
   } else {
     throw HttpException('Failed to load meteo forecast');
   }

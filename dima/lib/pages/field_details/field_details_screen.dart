@@ -166,39 +166,25 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
         ),
         SizedBox(height: 20),
         Container(
-          width: 65,
-          height: 20,
+          width: 45,
+          height: 15,
           margin: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 235, 229, 229),
+            color: Color.fromARGB(255, 246, 243, 243),
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3),
-              ),
-            ],
+           
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(3, (index) {
               return Container(
                 margin: EdgeInsets.symmetric(horizontal: 5),
-                width: 10,
-                height: 10,
+                width: 5,
+                height: 5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _currentPage == index ? Color.fromARGB(255, 41, 70, 0) : Color.fromARGB(255, 169, 169, 169),
-                  boxShadow: field.cropType == 'corn' ? [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
-                    ),
-                  ] : null,
+                  color: _currentPage == index ? Color.fromARGB(255, 57, 96, 1) : Color.fromARGB(255, 169, 169, 169),
+                  
                 ),
               );
             }),

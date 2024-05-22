@@ -1,6 +1,7 @@
 import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/pages/map/map_screen.dart';
 import 'package:dima/pages/register/register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'pages/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,6 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  //await FirebaseAuth.instance.signOut();
   runApp(const MyApp());
 }
 
@@ -31,12 +33,13 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: FieldListScreen(),
+      home: AuthStateChecker(),
       routes:{
         '/register': (context)=>Register(),
         '/login': (context)=>Login(),
         '/add_field': (context)=>MapScreen(),
         '/field_details': (context)=>FieldDetailsScreen(),
+        '/field_list': (context)=>FieldListScreen(),
       }
       );
   }
@@ -114,5 +117,24 @@ class HelloWorldGenerator extends StatelessWidget {
               )));
     }
     return Column(children: childList);
+  }
+}
+class AuthStateChecker extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          return const FieldListScreen();  // La tua home page quando l'utente è autenticato
+        } else {
+          return const Login();  // La tua pagina di login quando l'utente non è autenticato
+        }
+      },
+    );
   }
 }

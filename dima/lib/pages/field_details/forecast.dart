@@ -1,3 +1,4 @@
+import 'package:dima/api/open_meteo/open_meteo_utils.dart';
 import 'package:flutter/material.dart';
 
 class ForecastWidget extends StatelessWidget {
@@ -6,20 +7,35 @@ class ForecastWidget extends StatelessWidget {
   final double minTemp;
   final double maxTemp;
   final double precipitation;
-
-  const ForecastWidget({required this.weatherCode, required this.minTemp, required this.maxTemp, required this.precipitation});
-
+  final String date;
+  
+  const ForecastWidget({required this.weatherCode, required this.minTemp, required this.maxTemp, required this.precipitation, required this.date});
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
+      margin: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
+        borderRadius: BorderRadius.circular(10),
+
+      ),
+      child: Column(
         children: [
-          Image(image:AssetImage('assets/images/$weatherCode.png'), width: 80, height: 80),
-          Column(
+          Text(date, style: TextStyle(fontSize: 15)),
+          Row(
             children: [
-              Text('Min: $minTemp °C', style: TextStyle()),
-              Text('Max: $maxTemp °C', style: TextStyle()),
-              Text('Precipitation: $precipitation mm', style: TextStyle()),
+              Column(
+                children: [
+                  Image(image:AssetImage('assets/images/${convertCodesToIcons(weatherCode)}.png'), width: 65, height: 65),
+                  Text('$precipitation mm', style: TextStyle()),
+                ],
+              ),
+              Column(
+                children: [
+                  Text('$minTemp °C', style: TextStyle()),
+                  Text('$maxTemp °C', style: TextStyle()),
+                ],
+              ),
             ],
           ),
         ],
