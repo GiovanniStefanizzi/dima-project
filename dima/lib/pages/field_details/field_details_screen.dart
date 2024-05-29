@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 //import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:dima/pages/field_details/meteo_details.dart';
@@ -32,6 +33,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
 
   void updateDataFromChild(MapOverlayType newData) {
     setState(() {
+      _pages[2]= MapsOverlayPage(updateParentData: updateDataFromChild, startingType: newData);
       _mapType = newData;
       print(_mapType);
     });
@@ -86,7 +88,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     Placeholder(),
     // MeteoPage(),
     // ActivityPage(),
-    MapsOverlayPage(updateParentData: updateDataFromChild),
+    MapsOverlayPage(updateParentData: updateDataFromChild, startingType: _mapType),
   ];
   }
 
@@ -130,6 +132,15 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                   urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
                   userAgentPackageName: 'dima',
                 ),
+                PolygonLayer(polygons: [
+                  Polygon(
+                    points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
+                    color: Colors.green.withOpacity(0.2),
+                    borderStrokeWidth: 2,
+                    borderColor: Colors.black,
+                    isFilled: _mapType==MapOverlayType.normal ? true : false,
+                  ),
+                ],),
                 _mapUrls[_mapType] == null ? Container() :
                 OverlayImageLayer(
                   overlayImages: [

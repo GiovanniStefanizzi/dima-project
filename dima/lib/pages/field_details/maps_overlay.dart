@@ -1,18 +1,23 @@
 import 'package:dima/utils/map_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsOverlayPage extends StatefulWidget {
   final Function(MapOverlayType) updateParentData;
+  
+  final MapOverlayType startingType;
 
-  const MapsOverlayPage({required this.updateParentData});
+  const MapsOverlayPage({required this.updateParentData, required this.startingType});
 
   @override
   State<MapsOverlayPage> createState() => _MyWidgetState();
 }
 
 class _MyWidgetState extends State<MapsOverlayPage> {
-  MapOverlayType _mapType= MapOverlayType.normal;
+  //get startingType frome the state
+  late MapOverlayType _mapType;
+
 
   void updateParent() {
     widget.updateParentData(_mapType);
@@ -22,8 +27,9 @@ class _MyWidgetState extends State<MapsOverlayPage> {
   void initState() {
     super.initState();
     setState(() {
-      _mapType = MapOverlayType.normal;
+      _mapType = widget.startingType;
     });
+    print(_mapType);
   }
 
   @override
