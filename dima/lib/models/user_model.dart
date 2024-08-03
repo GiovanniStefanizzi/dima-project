@@ -1,3 +1,4 @@
+import 'package:dima/models/activity_model.dart';
 import 'package:dima/models/field_model.dart';
 
 class User_model{
@@ -19,9 +20,9 @@ class User_model{
       uid: data['_uid'],
       email: data['email'],
       username: data['username'],
-      fields:  List<Field_model>.from((data['fields'] ?? []).map((fieldJson) {
-        return Field_model.fromMap(fieldJson);
-      })),
+      fields: (data['fields'] as List<dynamic>?)
+          ?.map((fieldJson) => Field_model.fromMap(fieldJson))
+          .toList() ?? [],
     );
   }
 
@@ -36,4 +37,6 @@ class User_model{
   List<Field_model> getFields(){
     return fields;
   }
+
+  
 }

@@ -20,6 +20,7 @@ Future<List<Field_model>> getFields() async {
   // Check if the user is not null
   if (user != null) {
     // If user is not null, return the fields from the user
+    print(user.toString());
     return user.getFields();
   } else {
     // If user is null, return an empty list or handle the case accordingly
@@ -44,25 +45,7 @@ class _MyWidgetState extends State<FieldListScreen> {
       ),
       appBar: AppBar(
         title: Text('Fields'),
-        backgroundColor: Color.fromARGB(255, 150, 177, 150),
       ),
-      drawer: Drawer(
-        backgroundColor: const Color.fromARGB(255, 119, 202, 122),
-        child: ListView(
-          children: [
-            DrawerHeader(
-
-              child: Text("Settings", style: TextStyle(color: const Color.fromARGB(255, 249, 249, 249)),)
-              
-              ),
-              ListTile(
-                tileColor: const Color.fromARGB(255, 141, 165, 142),
-                title: Text("Account"),
-              )
-          ],
-        ),
-      ),
-      
       body: FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {
@@ -132,7 +115,12 @@ class _MyWidgetState extends State<FieldListScreen> {
                     ),
                     onTap: () {
                       // Navigate to the FieldDetailsScreen
-                      Navigator.pushNamed(context, '/field_details', arguments: field);
+                      Navigator.pushNamed(
+                        context, '/field_details',
+                        arguments:{
+                        'field': field,
+                        'index': index}
+                      );
                     },
                   );
                 },

@@ -20,7 +20,8 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
   @override
   Widget build(BuildContext context) {
 
-    Field_model field = ModalRoute.of(context)!.settings.arguments as Field_model;
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
+    final Field_model field = arguments['field'] as Field_model;
 
     return Container(
       child: Column(

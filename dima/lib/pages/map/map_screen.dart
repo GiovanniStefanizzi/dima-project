@@ -208,7 +208,7 @@ Future<void> _createField() async {
     bool hailAlert = _hailController;
     bool frostAlert = _frostController;
     List<GeoPoint> points = _convertToGeoPoint(_polygonLatLongs);
-    Field_model field=Field_model(name: name , cropType: cropType, datePlanted: datePlanted, hailAlert: hailAlert, frostAlert: frostAlert, points: points);
+    Field_model field=Field_model(name: name , cropType: cropType, datePlanted: datePlanted, hailAlert: hailAlert, frostAlert: frostAlert, points: points, activities: []);
     await Firestore().writeField(field.toMap());
   }
 

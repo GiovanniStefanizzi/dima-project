@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/api/earthengine/earthengine.dart';
+import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/field_model.dart';
+import 'package:dima/pages/field_details/activity.dart';
 import 'package:dima/pages/field_details/maps_overlay.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:dima/utils/map_type.dart';
@@ -85,15 +87,14 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     });
     _pages = [
     MeteoDetailsWidget(),
-    Placeholder(),
-    // MeteoPage(),
-    // ActivityPage(),
+    ActivityWidget(),
     MapsOverlayPage(updateParentData: updateDataFromChild, startingType: _mapType),
   ];
   }
 
   Future<void> fetchMapUrls() async {
-    final Field_model field = ModalRoute.of(context)!.settings.arguments as Field_model;
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
+    final Field_model field = arguments['field'] as Field_model;
     final _ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
     // final _ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
     // final _eviUrl = await getMap(field.points, MapOverlayType.evi);
@@ -110,12 +111,47 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final Field_model field = ModalRoute.of(context)!.settings.arguments as Field_model;
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
+    final Field_model field = arguments['field'] as Field_model;
+    final int index = arguments['index'] as int;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(field.name),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              //show alert dialog asking for confirmation to delete
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Delete field'),
+                    content: Text('Are you sure you want to delete this field?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          //delete field
+                          Firestore().removeField(index);
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Delete'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
