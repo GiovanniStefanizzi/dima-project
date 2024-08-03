@@ -48,6 +48,7 @@ dependencies:
   uuid: ^4.4.0
   location: ^6.0.2
   geolocator: ^11.0.0
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:

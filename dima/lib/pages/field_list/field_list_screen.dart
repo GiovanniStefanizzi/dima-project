@@ -44,7 +44,25 @@ class _MyWidgetState extends State<FieldListScreen> {
       ),
       appBar: AppBar(
         title: Text('Fields'),
+        backgroundColor: Color.fromARGB(255, 150, 177, 150),
       ),
+      drawer: Drawer(
+        backgroundColor: const Color.fromARGB(255, 119, 202, 122),
+        child: ListView(
+          children: [
+            DrawerHeader(
+
+              child: Text("Settings", style: TextStyle(color: const Color.fromARGB(255, 249, 249, 249)),)
+              
+              ),
+              ListTile(
+                tileColor: const Color.fromARGB(255, 141, 165, 142),
+                title: Text("Account"),
+              )
+          ],
+        ),
+      ),
+      
       body: FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {

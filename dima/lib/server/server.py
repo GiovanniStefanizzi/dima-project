@@ -1,9 +1,4 @@
 from flask import Flask, jsonify, request, send_file
-from PIL import Image, ImageDraw
-import io
-import requests
-import matplotlib.pyplot as plt
-import urllib.request
 import ee
 
 app = Flask(__name__)
@@ -45,4 +40,4 @@ def get_data():
     return jsonify({"link": url})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

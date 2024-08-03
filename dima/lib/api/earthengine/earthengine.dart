@@ -11,7 +11,7 @@ Future<String> getMap(List<GeoPoint> points, MapOverlayType mapType) async {
   String polygonString = Field_utils.encodeGeoPoints(points);
   try {
 
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/api/${mapTypeString}?points=$polygonString'));
+    final response = await http.get(Uri.parse('http://52.158.45.249:5000/api/${mapTypeString}?points=$polygonString'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

@@ -12,7 +12,20 @@
           "package_name": "com.example.dima"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "36125787022-vckap1dqbuvjfr9hpc9lmak9e6p90aiq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dima",
+            "certificate_hash": "400b81d6adee46b42e39b7a1b2b668ea87329661"
+          }
+        },
+        {
+          "client_id": "36125787022-c0bcb7r8ma42btai911kfhjevoq29rk2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA5RtmEeoAKFNWTMfEWf4KYoVw8Dr3OwzI"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36125787022-c0bcb7r8ma42btai911kfhjevoq29rk2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "36125787022-u728v3tdcjnnmfaf2u6pc2eqds9nqs3a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dima"
+              }
+            }
+          ]
         }
       }
     }

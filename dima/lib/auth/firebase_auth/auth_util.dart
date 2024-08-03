@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   User? get currentUser => _auth.currentUser;
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
@@ -65,10 +67,46 @@ class AuthService {
     }
   }
 
+  Future<UserCredential> signWithGoogle () async {
+    print('signing in with google');
+    try{
+      await _googleSignIn.disconnect();
+    }
+    catch(e){}
+    
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    print('credential: $credential');
+    
+
+
+    // Once signed in, return the UserCredential
+    UserCredential result = await FirebaseAuth.instance.signInWithCredential(credential);
+    print('result: $result');
+
+    if (result.additionalUserInfo!.isNewUser) {
+      User_model user = User_model.createUser(uid: result.user!.uid, email: result.user!.email!, username: result.user!.displayName!);
+      await Firestore().writeUser(user.toMap());
+    }
+
+
+    return result;
+  }
+
   // sign out
   Future signOut() async {
     try {
-      return await _auth.signOut();
+      //await _googleSignIn.signOut();
+      //await _googleSignIn.disconnect();
+      await _auth.signOut();
     } catch (e) {
       print(e.toString());
       return null;
