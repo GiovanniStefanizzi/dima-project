@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/pages/field_details/activity.dart';
 import 'package:dima/pages/field_details/maps_overlay.dart';
+import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:dima/utils/map_type.dart';
 import 'package:flutter/foundation.dart';
@@ -137,11 +139,15 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                         child: Text('Cancel'),
                       ),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           //delete field
                           Firestore().removeField(index);
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          await Future.delayed(Duration(seconds: 1));
+                          //todo caricatore
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => FieldListScreen()),
+                            (Route<dynamic> route) => false,
+                          );
                         },
                         child: Text('Delete'),
                       ),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/models/activity_model.dart';
+import 'package:dima/models/field_model.dart';
 import 'package:dima/models/user_model.dart';
 import 'package:dima/auth/firebase_auth/auth_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -184,5 +185,10 @@ class Firestore{
     catch (e){
       return null;
     }
+  }
+
+  Future<Field_model> getField(int index) async {
+    User_model? user = await getCurrentUser();
+    return user!.fields[index];
   }
 }

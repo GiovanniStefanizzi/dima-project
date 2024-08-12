@@ -49,7 +49,7 @@ class _MyWidgetState extends State<FieldListScreen> {
       body: FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting ) {
             // Show a loading indicator while waiting for the future to complete
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
