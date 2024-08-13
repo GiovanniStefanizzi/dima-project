@@ -6,6 +6,8 @@ import 'package:dima/api/open_meteo/open_meteo_utils.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/notification_utils.dart';
+
 class FieldListScreen extends StatefulWidget {
   const FieldListScreen({super.key});
 
@@ -114,6 +116,8 @@ class _MyWidgetState extends State<FieldListScreen> {
                       
                     ),
                     onTap: () {
+                      showNotification(title: "dio", body:"bubu");
+                      print("\n\n\n\nFICA\n\n\n\n");
                       // Navigate to the FieldDetailsScreen
                       Navigator.pushNamed(
                         context, '/field_details',

@@ -7,6 +7,8 @@ import 'pages/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'pages/field_details/field_details_screen.dart';
+import 'utils/notification_utils.dart';
+import 'utils/background_utils.dart';
 
 // ...
 
@@ -16,6 +18,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   //await FirebaseAuth.instance.signOut();
+
+  // Inizializza le notifiche
+  initializeNotifications();
+  
+  
+  // Inizializza il background fetch
+  //initializeBackgroundFetch();
+
   runApp(const MyApp());
 }
 
