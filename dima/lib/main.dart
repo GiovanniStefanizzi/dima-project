@@ -20,7 +20,7 @@ void main() async {
   //await FirebaseAuth.instance.signOut();
 
   // Inizializza le notifiche
-  initializeNotifications();
+  NotificationService().initNotification();
   
   
   // Inizializza il background fetch

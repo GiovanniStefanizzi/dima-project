@@ -41,7 +41,9 @@ class _MyWidgetState extends State<FieldListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to the AddFieldScreen
-          Navigator.pushNamed(context, '/add_field');
+          //Navigator.pushNamed(context, '/add_field');
+          NotificationService().showNotification(title: 'Sample title', body: 'It works!', payLoad: 'payload');
+          print("\n\n\n\nFICA\n\n\n\n");
         },
         child: Icon(Icons.add),
       ),
@@ -116,8 +118,6 @@ class _MyWidgetState extends State<FieldListScreen> {
                       
                     ),
                     onTap: () {
-                      showNotification(title: "dio", body:"bubu");
-                      print("\n\n\n\nFICA\n\n\n\n");
                       // Navigate to the FieldDetailsScreen
                       Navigator.pushNamed(
                         context, '/field_details',
