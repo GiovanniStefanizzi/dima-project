@@ -21,6 +21,19 @@ class Firestore{
     }
   }
 
+  Future deleteUser() async {
+    String? userId = AuthService().getCurrentUserId();
+    try{
+      CollectionReference users = FirebaseFirestore.instance.collection("users");
+      QuerySnapshot querySnapshot = await users.where('_uid', isEqualTo: userId).get();
+      DocumentReference documentReference = querySnapshot.docs.first.reference;
+      await documentReference.delete();
+    }
+    catch(e){
+      print(e.toString());
+    }
+  }
+
   //write new field
   Future writeField(Map<String, dynamic> field) async {
     String? userId = AuthService().getCurrentUserId();

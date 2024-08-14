@@ -1,4 +1,5 @@
 import 'package:dima/pages/field_list/field_list_screen.dart';
+import 'package:dima/pages/homepage.dart';
 import 'package:dima/pages/map/map_screen.dart';
 import 'package:dima/pages/register/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +25,7 @@ void main() async {
   
   
   // Inizializza il background fetch
-  //initializeBackgroundFetch();
+  initializeBackgroundFetch();
 
   runApp(const MyApp());
 }
@@ -140,7 +141,7 @@ class AuthStateChecker extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData) {
-          return const FieldListScreen();  // La tua home page quando l'utente è autenticato
+          return const Homepage();  // La tua home page quando l'utente è autenticato
         } else {
           return const Login();  // La tua pagina di login quando l'utente non è autenticato
         }

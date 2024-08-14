@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:dima/models/meteo_forecast_model.dart';
@@ -104,6 +105,39 @@ Future<int> getCurrentHumidity(GeoPoint point) async {
   }
 } 
 
+Future<double> getMinTemperature3days(GeoPoint point) async {
+    var lon = point.longitude;
+    var lat = point.latitude;
+    var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=temperature_2m_min&timezone=Europe%2FBerlin&forecast_days=3'));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      List<double> temp = data['daily']['temperature_2m_min'].cast<double>();
+      double minTemp = temp.reduce(min);
+      //print('RESPONSE:'+temp.toString());
+      return minTemp;
+    } else {
+      throw HttpException('Failed to load temperature');
+    }
+  }
+
+
+Future<int> getMaxWeatherCode3days(GeoPoint point) async {
+    var lon = point.longitude;
+    var lat = point.latitude;
+    var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=weather_code&timezone=Europe%2FBerlin&forecast_days=3'));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      print(data['daily']['weather_code']);
+      List<int> codes = data['daily']['weather_code'].cast<int>();
+      int code = codes.reduce(max);
+      //print('RESPONSE:'+code.toString());
+      return code;
+    } else {
+      throw HttpException('Failed to load weather code');
+    }
+  }
+
+
 Future<MeteoForecast_model> getWeatherForecast(GeoPoint point) async {
   var lon = point.longitude;
   var lat = point.latitude;
@@ -140,5 +174,4 @@ Future<MeteoForecast_model> getWeatherForecast(GeoPoint point) async {
   } else {
     throw HttpException('Failed to load meteo forecast');
   }
-
 }

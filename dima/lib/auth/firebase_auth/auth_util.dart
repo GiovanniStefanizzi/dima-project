@@ -114,15 +114,26 @@ class AuthService {
   }
 
   
-String? getCurrentUserId() {
-  User? user = FirebaseAuth.instance.currentUser;
-  
-  if (user != null) {
-    String userId = user.uid;
-    return userId;
-  } else {
-    print('User is not signed in.');
-    return null;
+  String? getCurrentUserId() {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String userId = user.uid;
+      return userId;
+    } else {
+      print('User is not signed in.');
+      return null;
+    }
   }
-}
+
+  Future deleteUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await Firestore().deleteUser();
+      await user.delete();
+    } else {
+      print('User is not signed in.');
+    }
+  }
+
 }

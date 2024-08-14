@@ -3,6 +3,7 @@ import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/models/user_model.dart';
 import 'package:dima/api/open_meteo/open_meteo_utils.dart';
+import 'package:dima/utils/background_utils.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -41,9 +42,10 @@ class _MyWidgetState extends State<FieldListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to the AddFieldScreen
-          //Navigator.pushNamed(context, '/add_field');
-          NotificationService().showNotification(title: 'Sample title', body: 'It works!', payLoad: 'payload');
-          print("\n\n\n\nFICA\n\n\n\n");
+          Navigator.pushNamed(context, '/add_field');
+          //NotificationService().showNotification(title: 'Sample title', body: 'It works!', payLoad: 'payload');
+          //initializeBackgroundFetch();
+          
         },
         child: Icon(Icons.add),
       ),
