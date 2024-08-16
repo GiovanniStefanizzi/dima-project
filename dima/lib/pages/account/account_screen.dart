@@ -14,7 +14,7 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _accountScreenState extends State<AccountScreen> {
-
+  bool _isEditing = false;
   final AuthService _auth=AuthService();
 
   Future<String> getUsername() async {
@@ -43,7 +43,7 @@ class _accountScreenState extends State<AccountScreen> {
             //put size equal to 10% of the screen height 
             size: 0.2 * MediaQuery.of(context).size.height),
             FutureBuilder(future: getUsername(), builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+              if (snapshot.connectionState == ConnectionState.waiting || _isEditing) {
                 return CircularProgressIndicator();
               } else {
                 return Text(snapshot.data.toString());
@@ -78,8 +78,13 @@ class _accountScreenState extends State<AccountScreen> {
                         ),
                         TextButton(
                           onPressed: () async {
-                            //await Firestore().updateUsername(_controller.text);
+                            await Firestore().updateUsername(_controller.text);
+
+                            _isEditing=true;
                             Navigator.of(context).pop();
+                            await Future.delayed(Duration(milliseconds: 400));
+                            _isEditing=false;
+                            setState(() {});
                           },
                           child: const Text('Change'),
                         ),
@@ -96,7 +101,14 @@ class _accountScreenState extends State<AccountScreen> {
                 Navigator.pushNamed(context, '/login');
               },
               child: const Text('Sign out'),
-            )
+            ),
+            TextButton(
+              onPressed: () async {
+                await AuthService().deleteUser();
+                Navigator.pushNamed(context, '/login');
+              },
+              child: const Text('Delete account'),
+            ),
           ],
         ),
       ),
