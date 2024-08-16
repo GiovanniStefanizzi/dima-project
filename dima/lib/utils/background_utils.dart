@@ -28,14 +28,12 @@ Future<void> initializeBackgroundFetch() async {
     (taskId) async {
       // Logica di background fetch
       //DateTime now = DateTime.now();
-      print("NOTIFICONA ASSURDA");
+      print("Notification sent");
       await NotificationService().notifyUser();
       BackgroundFetch.finish(taskId);
     },
     (taskId) async {
-      print("TIMEOUT BABY");
       BackgroundFetch.finish(taskId);
     }
   );
-  print("STATUS: $status");
 }

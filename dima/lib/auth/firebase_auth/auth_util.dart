@@ -72,7 +72,9 @@ class AuthService {
     try{
       await _googleSignIn.disconnect();
     }
-    catch(e){}
+    catch(e){
+      print(e.toString());
+    }
     
     final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
     // Obtain the auth details from the request
@@ -84,13 +86,13 @@ class AuthService {
       idToken: googleAuth?.idToken,
     );
 
-    print('credential: $credential');
+    //print('credential: $credential');
     
 
 
     // Once signed in, return the UserCredential
     UserCredential result = await FirebaseAuth.instance.signInWithCredential(credential);
-    print('result: $result');
+    //print('result: $result');
 
     if (result.additionalUserInfo!.isNewUser) {
       User_model user = User_model.createUser(uid: result.user!.uid, email: result.user!.email!, username: result.user!.displayName!);
@@ -102,16 +104,17 @@ class AuthService {
   }
 
   // sign out
-  Future signOut() async {
+  Future logOut() async {
     try {
-      //await _googleSignIn.signOut();
-      //await _googleSignIn.disconnect();
       await _auth.signOut();
+      print('signed out');
     } catch (e) {
       print(e.toString());
       return null;
     }
   }
+
+
 
   
   String? getCurrentUserId() {

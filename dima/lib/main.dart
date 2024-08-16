@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
         '/add_field': (context)=>MapScreen(),
         '/field_details': (context)=>FieldDetailsScreen(),
         '/field_list': (context)=>FieldListScreen(),
+        '/homepage': (context)=>Homepage(),
       }
       );
   }

@@ -29,7 +29,7 @@ class _MyWidgetState extends State<MapsOverlayPage> {
     setState(() {
       _mapType = widget.startingType;
     });
-    print(_mapType);
+    //print(_mapType);
   }
 
   @override

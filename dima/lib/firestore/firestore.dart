@@ -37,7 +37,7 @@ class Firestore{
   //write new field
   Future writeField(Map<String, dynamic> field) async {
     String? userId = AuthService().getCurrentUserId();
-    print( "userId: $userId");
+    //print( "userId: $userId");
     Map<String, dynamic> newElement = field; 
     try{
         CollectionReference users = FirebaseFirestore.instance.collection("users");
@@ -57,7 +57,7 @@ class Firestore{
     String? userId = AuthService().getCurrentUserId();
     User_model? user = await getCurrentUser();
     Map<String, dynamic> userMap;
-    print( "userId: $userId");
+    //print( "userId: $userId");
 
     user?.fields.removeAt(index);
     userMap = user!.toMap();
@@ -96,7 +96,7 @@ class Firestore{
     String? userId = AuthService().getCurrentUserId();
     User_model? user = await getCurrentUser();
     Map<String, dynamic> userMap;
-    print( "userId: $userId");
+    //print( "userId: $userId");
     
     user?.fields[externalIndex].activities.add(newActivity);
     userMap = user!.toMap();
@@ -137,7 +137,7 @@ class Firestore{
     String? userId = AuthService().getCurrentUserId();
     User_model? user = await getCurrentUser();
     Map<String, dynamic> userMap;
-    print( "userId: $userId");
+    //print( "userId: $userId");
 
     user?.fields[externalIndex].activities.removeAt(internalIndex);
     userMap = user!.toMap();
@@ -177,7 +177,7 @@ class Firestore{
 
   Future<User_model?> getCurrentUser() async {
     String? userId=AuthService().getCurrentUserId();
-    print( "userId: $userId");
+    //print( "userId: $userId");
     //String userId="0IjeLFlmtydMGsFarrTs6l5Nt0r1";
 
     try{
@@ -187,7 +187,7 @@ class Firestore{
       DocumentSnapshot documentSnapshot = firstDocument as DocumentSnapshot;
       if(documentSnapshot.exists){
         Map<String, dynamic> documentData = documentSnapshot.data() as Map<String, dynamic>;
-        print(documentData);
+        //print(documentData);
         User_model user_model =User_model.fromMap(documentData);
         return user_model;
       }
@@ -203,5 +203,16 @@ class Firestore{
   Future<Field_model> getField(int index) async {
     User_model? user = await getCurrentUser();
     return user!.fields[index];
+  }
+
+  updateUsername(String text) {
+    String? userId = AuthService().getCurrentUserId();
+    CollectionReference users = FirebaseFirestore.instance.collection("users");
+    users.where('_uid', isEqualTo: userId).get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.update({'username': text});
+      });
+    });
+
   }
 }

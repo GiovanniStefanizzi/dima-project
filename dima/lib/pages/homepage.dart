@@ -1,3 +1,4 @@
+import 'package:dima/pages/account/account_screen.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -36,7 +37,7 @@ class _HomepageState extends State<Homepage> {
       ),
       body: <Widget>[
         FieldListScreen(),
-        Placeholder(),
+        AccountScreen(),
       ].elementAt(_selectedIndex),
     );
   }

@@ -92,13 +92,25 @@ class _LoginState extends State<Login> {
                       child: const Text('sign in')),
                     ElevatedButton(
                       onPressed: () {
-                        _auth.signWithGoogle();
+                        
+                        _signInWithGoogle();
                       },
                       child: const Text('sign in with Google'))
                     ]))),
           ),
         ));
   }
+
+void _signInWithGoogle() async {
+    UserCredential? user = await _auth.signWithGoogle();
+    if (user.user != null) {
+      print("User is successfully signed in with google");
+      Navigator.pushNamed(context, "/homepage");
+    } else {
+      print("some error occured");
+    }
+}
+
 
 void _signIn() async {
     setState(() {
@@ -117,7 +129,7 @@ void _signIn() async {
     if (user != null) {
       //TODO: toast (o quel che è)
       print("User is successfully signed in");
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushNamed(context, "/homepage");
     } else {
       print("some error occured");
     }

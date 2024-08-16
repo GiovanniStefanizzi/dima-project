@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
+import 'package:dima/pages/homepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -478,7 +479,7 @@ Future<void> _createField() async {
                         sleep(const Duration(seconds: 1));
                         //todo caricatore
                         Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => FieldListScreen()),
+                          MaterialPageRoute(builder: (context) => Homepage()),
                           (Route<dynamic> route) => false,
                         );
                       }
