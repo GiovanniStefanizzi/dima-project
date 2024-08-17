@@ -105,7 +105,7 @@ void _signInWithGoogle() async {
     UserCredential? user = await _auth.signWithGoogle();
     if (user.user != null) {
       print("User is successfully signed in with google");
-      Navigator.pushNamed(context, "/homepage");
+      Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
     } else {
       print("some error occured");
     }
@@ -129,7 +129,7 @@ void _signIn() async {
     if (user != null) {
       //TODO: toast (o quel che è)
       print("User is successfully signed in");
-      Navigator.pushNamed(context, "/homepage");
+      Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
     } else {
       print("some error occured");
     }

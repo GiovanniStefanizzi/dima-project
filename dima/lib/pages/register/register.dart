@@ -129,7 +129,7 @@ final AuthService _auth = AuthService();
 
     if (user != null) {
       print("Sign up successful");
-      Navigator.pushNamed(context, '/homepage');
+      Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
     } else {
       print("Sign up failed");
     }

@@ -52,7 +52,7 @@ class _MyWidgetState extends State<FieldListScreen> {
       appBar: AppBar(
         title: Text('Fields'),
       ),
-      body: FutureBuilder<List<Field_model>>(
+      body:   FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ) {

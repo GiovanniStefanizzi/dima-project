@@ -1,3 +1,4 @@
+import 'package:dima/pages/field_details/modify_field_screen.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/pages/homepage.dart';
 import 'package:dima/pages/map/map_screen.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         '/field_details': (context)=>FieldDetailsScreen(),
         '/field_list': (context)=>FieldListScreen(),
         '/homepage': (context)=>Homepage(),
+        '/modify_field': (context)=>ModifyFieldScreen(),
       }
       );
   }

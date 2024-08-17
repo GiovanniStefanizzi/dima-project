@@ -121,42 +121,53 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       appBar: AppBar(
         title: Text(field.name),
         actions: [
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              //show alert dialog asking for confirmation to delete
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Delete field'),
-                    content: Text('Are you sure you want to delete this field?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          //delete field
-                          Firestore().removeField(index);
-                          await Future.delayed(Duration(seconds: 1));
-                          //todo caricatore
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => FieldListScreen()),
-                            (Route<dynamic> route) => false,
-                          );
-                        },
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  );
-                },
-              );
+          PopupMenuButton <String>(
+            onSelected: (value) {handleClick(value, index);},
+            itemBuilder: (BuildContext context){
+              return{'Delete', 'Change settings'}.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
             },
-          ),
+          )
+          //IconButton(
+          //  icon: Icon(Icons.delete),
+          //  onPressed: () {
+          //    //show alert dialog asking for confirmation to delete
+          //    showDialog(
+          //      context: context,
+          //      builder: (BuildContext context) {
+          //        return AlertDialog(
+          //          title: Text('Delete field'),
+          //          content: Text('Are you sure you want to delete this field?'),
+          //          actions: [
+          //            TextButton(
+          //              onPressed: () {
+          //                Navigator.of(context).pop();
+          //              },
+          //              child: Text('Cancel'),
+          //            ),
+          //            TextButton(
+          //              onPressed: () async {
+          //                //delete field
+          //                Firestore().removeField(index);
+          //                await Future.delayed(Duration(seconds: 1));
+          //                //todo caricatore
+          //                Navigator.of(context).pushAndRemoveUntil(
+          //                  MaterialPageRoute(builder: (context) => FieldListScreen()),
+          //                  (Route<dynamic> route) => false,
+          //                );
+          //              },
+          //              child: Text('Delete'),
+          //            ),
+          //          ],
+          //        );
+          //      },
+          //    );
+          //  },
+          //),
         ],
       ),
       body: Column(
@@ -246,5 +257,47 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
         ],
       ) ,
     );
+  }
+
+  Future<void> handleClick(String value, int index) async {
+    switch (value){
+      case 'Delete':
+          //show alert dialog asking for confirmation to delete
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Delete field'),
+                content: Text('Are you sure you want to delete this field?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      //delete field
+                      Firestore().removeField(index);
+                      await Future.delayed(Duration(seconds: 1));
+                      //todo caricatore
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => FieldListScreen()),
+                        (Route<dynamic> route) => false,
+                      );
+                    },
+                    child: Text('Delete'),
+                  ),
+                ],
+              );
+            },
+          );
+        break;
+      case 'Change settings':
+        Field_model fieldModel = await Firestore().getField(index);
+        Navigator.pushNamed(context, '/modify_field', arguments: {'index': index,'field': fieldModel});
+        break;
+    }
   }
 }
