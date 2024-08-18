@@ -19,28 +19,27 @@ class _LoginState extends State<Login> {
   TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           child: Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 19, 243, 217),
-                  Color.fromARGB(255, 22, 190, 67)
-                ],
-              ),
+              color: Colors.blue,
             ),
+            
+          
             child: Container(
-              height: 420,
+              height: screenHeight * 0.5,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15.0),
               ),
-              margin: const EdgeInsets.only(top: 150, bottom: 300, left: 40, right: 40),
-              padding: const EdgeInsets.all(20),
+              margin: EdgeInsets.only(top: screenHeight*0.25, bottom: screenHeight*0.25, left: screenWidth*0.15, right: screenWidth*0.15),
+              padding: const EdgeInsets.all(30),
               child: Form(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 key: _formKey,
