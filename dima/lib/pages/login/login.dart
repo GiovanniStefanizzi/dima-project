@@ -50,7 +50,7 @@ class _LoginState extends State<Login> {
                 borderRadius: BorderRadius.circular(15.0),
               ),
               margin: EdgeInsets.only(top: screenHeight*0.25, bottom: screenHeight*0.25, left: screenWidth*0.15, right: screenWidth*0.15),
-              padding: const EdgeInsets.all(30),
+              padding:  EdgeInsets.all(screenWidth*0.05),
               child: Form(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 key: _formKey,
@@ -138,7 +138,7 @@ void _signIn() async {
       Fluttertoast.showToast(
         msg: "some error occurred while logging in",
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
         textColor: Colors.red,
         fontSize: 16.0
