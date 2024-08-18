@@ -1,6 +1,8 @@
 import 'package:dima/auth/firebase_auth/auth_util.dart';
+import 'package:dima/themes/theme_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -28,7 +30,8 @@ class _LoginState extends State<Login> {
         body: SingleChildScrollView(
           child: Container(
             decoration: const BoxDecoration(
-              color: Colors.blue,
+              color: Color.fromARGB(255, 197, 237, 172),
+            
             ),
             
           
@@ -36,6 +39,14 @@ class _LoginState extends State<Login> {
               height: screenHeight * 0.5,
               decoration: BoxDecoration(
                 color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(44, 0, 0, 0),
+                    blurRadius: 25.0,
+                    spreadRadius: 0.0,
+                    offset: Offset(0.0, 0.0),
+                  )
+                ],
                 borderRadius: BorderRadius.circular(15.0),
               ),
               margin: EdgeInsets.only(top: screenHeight*0.25, bottom: screenHeight*0.25, left: screenWidth*0.15, right: screenWidth*0.15),
@@ -46,27 +57,17 @@ class _LoginState extends State<Login> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'username',
-                        hintText: 'username',
-                        border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25)
-                        )
-                      ),
+                      decoration: ThemeOptions.inputDecoration('email', 'email'),
                     ),
                     Column(
                       children: [
                         TextFormField(
                           obscureText: true,
                           controller: _passwordController,
-                          decoration: InputDecoration(
-                            labelText: 'passwords',
-                            hintText: 'passwords',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),                              ),
-                          ),
+                          decoration: ThemeOptions.inputDecoration('password', 'password'),
                           validator: (value) {
                             if (value == null || value.isEmpty){
                               return "insert a password";
@@ -77,19 +78,23 @@ class _LoginState extends State<Login> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 5),
-                        TextButton(onPressed: () {
+                        SizedBox(height: screenHeight*0.03),
+                        TextButton(
+                          style: ThemeOptions.textButtonStyle(),
+                          onPressed: () {
                           Navigator.pushNamed(context, '/register');
                         },
                         child: const Text('New user? Sign up!'))
                       ],
                     ),
                     ElevatedButton(
+                      style: ThemeOptions.elevatedButtonStyle(),
                       onPressed: () async {
                         _signIn();
                       },
                       child: const Text('sign in')),
                     ElevatedButton(
+                      style: ThemeOptions.elevatedButtonStyle(),
                       onPressed: () {
                         
                         _signInWithGoogle();
@@ -126,11 +131,18 @@ void _signIn() async {
     });
 
     if (user != null) {
-      //TODO: toast (o quel che è)
+      
       print("User is successfully signed in");
       Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
     } else {
-      print("some error occured");
+      Fluttertoast.showToast(
+        msg: "some error occurred while logging in",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.red,
+        fontSize: 16.0
+    );
     }
   }
 

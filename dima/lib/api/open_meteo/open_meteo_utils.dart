@@ -45,7 +45,7 @@ int convertCodesToIcons(int weatherCode){
     case (71 || 73 || 75 || 77 || 85 || 86): return 7; // Snow
     case (80 || 81 || 82): return 8;                   // Rain showers
     case (95 || 96 || 99): return 9;                   // Thunderstorm
-    default: return 0;                                 // Unknown
+    default: return 1;                                 // Unknown
   }
 }
 

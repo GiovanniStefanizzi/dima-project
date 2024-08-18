@@ -1,3 +1,4 @@
+import 'package:dima/themes/theme_options.dart';
 import 'package:flutter/material.dart';
 import 'package:dima/auth/firebase_auth/auth_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,7 @@ final AuthService _auth = AuthService();
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+
                 colors: [
                   Color.fromARGB(255, 19, 243, 217),
                   Color.fromARGB(255, 22, 190, 67)
@@ -50,44 +52,28 @@ final AuthService _auth = AuthService();
                   children: [
                     TextFormField(
                       controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'username',
-                        hintText: 'username',
-                        border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25)
-                        )
-                      ),
+                      decoration: ThemeOptions.inputDecoration('username', 'username'),
+                      //decoration: InputDecoration(
+                      //  labelText: 'username',
+                      //  hintText: 'username',
+                      //  border: OutlineInputBorder(
+                      //  borderRadius: BorderRadius.circular(25)
+                      //  )
+                      //),
                     ),
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'email',
-                        hintText: 'email',
-                        border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25)
-                        )
-                      ),
+                      decoration: ThemeOptions.inputDecoration('email', 'email'),
                     ),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'passwords',
-                        hintText: 'passwords',
-                        border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25)
-                        )
-                      ),
+                      decoration: ThemeOptions.inputDecoration('password', 'password'),
                     ),
                     Column(
                       children: [
                         TextFormField(
                           obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'repeat passwords',
-                            hintText: 'repeat passwords',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),                              ),
-                          ),
+                          decoration: ThemeOptions.inputDecoration('repeat passwords', 'repeat passwords'),
                           //todo: validator: ,
                         ),
                         const SizedBox(height: 5),
@@ -98,11 +84,13 @@ final AuthService _auth = AuthService();
                       ],
                     ),
                     ElevatedButton(
+                      style: ThemeOptions.elevatedButtonStyle(),
                       onPressed: () async {
                         _signUp();
                       },
                       child: const Text('sign up')),
                     ElevatedButton(
+                      style: ThemeOptions.elevatedButtonStyle(),
                       onPressed: () {},
                       child: const Text('sign in with Google'))
                     ]))),
