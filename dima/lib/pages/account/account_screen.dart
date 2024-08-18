@@ -1,5 +1,6 @@
 import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/user_model.dart';
+import 'package:dima/themes/theme_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +58,7 @@ class _accountScreenState extends State<AccountScreen> {
               }
             }),
             ElevatedButton(
+              style: ThemeOptions.elevatedButtonStyle(),
               onPressed: () {
                 //alert with text field to change username
                 showDialog(
@@ -71,12 +73,14 @@ class _accountScreenState extends State<AccountScreen> {
                       ),
                       actions: <Widget>[
                         TextButton(
+                          style: ThemeOptions.textButtonStyle(),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                           child: const Text('Cancel'),
                         ),
                         TextButton(
+                          style: ThemeOptions.textButtonStyle(),
                           onPressed: () async {
                             await Firestore().updateUsername(_controller.text);
 

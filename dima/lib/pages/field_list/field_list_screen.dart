@@ -23,7 +23,6 @@ Future<List<Field_model>> getFields() async {
   // Check if the user is not null
   if (user != null) {
     // If user is not null, return the fields from the user
-    print(user.toString());
     return user.getFields();
   } else {
     // If user is null, return an empty list or handle the case accordingly
@@ -38,8 +37,15 @@ Future<List<Field_model>> getFields() async {
 class _MyWidgetState extends State<FieldListScreen> {
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
+
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 153, 194, 162),
         onPressed: () {
           // Navigate to the AddFieldScreen
           Navigator.pushNamed(context, '/add_field');
@@ -47,17 +53,18 @@ class _MyWidgetState extends State<FieldListScreen> {
           //initializeBackgroundFetch();
           
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-        title: Text('Fields'),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        title: const Text('Fields'),
       ),
       body:   FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting ) {
             // Show a loading indicator while waiting for the future to complete
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             // Show an error message if the future encounters an error
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -71,7 +78,7 @@ class _MyWidgetState extends State<FieldListScreen> {
                   // Build each item of the ListView using the Field_model
                   Field_model field = fields[index];
                   return ListTile(
-                    leading: Icon(Icons.map),
+                    leading: const Icon(Icons.map),
                     title: Text(field.name),
                     subtitle: Text(field.cropType) ,
                     trailing: Row(
@@ -90,7 +97,7 @@ class _MyWidgetState extends State<FieldListScreen> {
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
                           } else {
-                            return Image(image:AssetImage('assets/images/${snapshot.data}.png'), width: 50, height: 50);
+                            return Image(image:AssetImage('assets/images/${snapshot.data}.png'), width: screenWidth*0.15, height: screenHeight*0.15,);
                           }
                         },
                       ),
@@ -101,16 +108,18 @@ class _MyWidgetState extends State<FieldListScreen> {
                           return Container(
                             width: 15,
                             height: 15,
-                            child: CircularProgressIndicator( strokeWidth: 2,)
+                            //margin: EdgeInsets.only(top: screenHeight*0.05),
+                            child:const CircularProgressIndicator( strokeWidth: 2,)
                           );
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
                           return Container(
-                            width: 45,
-                            height: 25,
+                            width: screenWidth*0.08,
+                            height: screenHeight*0.05,
+                            margin: EdgeInsets.only(top: screenHeight*0.015),
                             child: Text(
-                              '${snapshot.data}°C', style: TextStyle(fontSize: 15)
+                              '${snapshot.data}°C', style: TextStyle(fontSize: screenWidth>screenHeight?screenHeight*0.02:screenWidth*0.02)
                             )
                           );
                         }
@@ -133,7 +142,7 @@ class _MyWidgetState extends State<FieldListScreen> {
               );
             } else {
               // Show a message when there are no fields
-              return Center(child: Text('No fields available'));
+              return const Center(child: Text('No fields available'));
             }
           }
         },

@@ -22,7 +22,8 @@ class _HomepageState extends State<Homepage> {
             _selectedIndex = index;
           });
         },
-        indicatorColor: Colors.green,
+        indicatorColor: const Color.fromARGB(255, 153, 194, 162),
+        backgroundColor: const Color.fromARGB(255, 219, 254, 184),
         selectedIndex: _selectedIndex,
         destinations: const <Widget>[
           NavigationDestination(
@@ -36,8 +37,8 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
       body: <Widget>[
-        FieldListScreen(),
-        AccountScreen(),
+        const FieldListScreen(),
+        const AccountScreen(),
       ].elementAt(_selectedIndex),
     );
   }

@@ -2,6 +2,7 @@ import 'package:dima/themes/theme_options.dart';
 import 'package:flutter/material.dart';
 import 'package:dima/auth/firebase_auth/auth_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class Register extends StatefulWidget {
@@ -23,33 +24,43 @@ final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: SingleChildScrollView(
           child: Container(
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-
-                colors: [
-                  Color.fromARGB(255, 19, 243, 217),
-                  Color.fromARGB(255, 22, 190, 67)
-                ],
-              ),
+              color: Color.fromARGB(255, 197, 237, 172)
             ),
             child: Container(
-              height: 420,
+              height: screenHeight * 0.65,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(44, 0, 0, 0),
+                    blurRadius: 25.0,
+                    spreadRadius: 0.0,
+                    offset: Offset(0.0, 0.0),
+                  )
+                ],
+                
               ),
-              margin: const EdgeInsets.only(top: 150, bottom: 300, left: 40, right: 40),
-              padding: const EdgeInsets.all(20),
+              margin: EdgeInsets.only(top: screenHeight*0.175, bottom: screenHeight*0.175, left: screenWidth*0.15, right: screenWidth*0.15),
+              padding:  EdgeInsets.all(screenWidth*0.05),
               child: Form(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: ThemeOptions.inputDecoration('email', 'email'),
+                    ),
                     TextFormField(
                       controller: _usernameController,
                       decoration: ThemeOptions.inputDecoration('username', 'username'),
@@ -66,18 +77,33 @@ final AuthService _auth = AuthService();
                       decoration: ThemeOptions.inputDecoration('email', 'email'),
                     ),
                     TextFormField(
+                      obscureText: true,
                       controller: _passwordController,
                       decoration: ThemeOptions.inputDecoration('password', 'password'),
+                      validator: (val){
+                        if(val!.length < 8){
+                          return 'password must be at least 6 characters long';
+                        }
+                        return null;
+                      },
                     ),
                     Column(
                       children: [
                         TextFormField(
                           obscureText: true,
                           decoration: ThemeOptions.inputDecoration('repeat passwords', 'repeat passwords'),
-                          //todo: validator: ,
+                          validator: (val){
+                            if(val != _passwordController.text){
+                              return 'passwords do not match';
+                            }
+                            return null;
+                          },
                         ),
-                        const SizedBox(height: 5),
-                        TextButton(onPressed: () {
+                        SizedBox(height: screenHeight *0.03),
+                        TextButton(
+                          style: ThemeOptions.textButtonStyle(),
+                          onPressed: () {
+                          
                           Navigator.pop(context);
                         },
                         child: const Text('Already have an account? Sign in!'))
@@ -119,7 +145,14 @@ final AuthService _auth = AuthService();
       print("Sign up successful");
       Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
     } else {
-      print("Sign up failed");
+      Fluttertoast.showToast(
+        msg: "signup failed",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.red,
+        fontSize: 16.0
+    );
     }
   }
 }

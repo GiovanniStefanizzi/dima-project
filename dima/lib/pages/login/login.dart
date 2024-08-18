@@ -136,7 +136,7 @@ void _signIn() async {
       Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
     } else {
       Fluttertoast.showToast(
-        msg: "some error occurred while logging in",
+        msg: "login failed",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
