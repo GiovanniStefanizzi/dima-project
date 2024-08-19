@@ -23,202 +23,134 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
     final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
     final Field_model field = arguments['field'] as Field_model;
 
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              children: [
+    return FutureBuilder(
+      future: Future.wait( [
+        getWeatherCode(Field_utils.getCentroid(field.points)),
+        getMinTemperature(Field_utils.getCentroid(field.points)),
+        getMaxTemperature(Field_utils.getCentroid(field.points)),
+        getDailyPrecipitation(Field_utils.getCentroid(field.points)),
+        getCurrentHumidity(Field_utils.getCentroid(field.points)),
+        getWeatherForecast(Field_utils.getCentroid(field.points)),
+      ]),
+      builder: (context,AsyncSnapshot<List<Object>> snapshot){
+        if(snapshot.connectionState==ConnectionState.waiting){
+          return CircularProgressIndicator();
+        }
+      else{
+        int weatherCode= snapshot.data![0] as int;
+        double minTemp= snapshot.data![1] as double;
+        double maxTemp= snapshot.data![2] as double;
+        double dailyPrecipitation= snapshot.data![3] as double;
+        int currentHumidity= snapshot.data![4] as int;
+        MeteoForecast_model forecast= snapshot.data![5] as MeteoForecast_model;
+        return Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                    
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  child: 
+                    Image(image:AssetImage('assets/images/${weatherCode}.png'), width: 80, height: 80)
+                ),
+                Container(
+                  // margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                              height: 45,
+                              child: Text(
+                                '${minTemp}°C', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.blue)
+                              )
+                            ),
+                      Container(
+                      
+                        height: 45,
+                        child: Text(
+                          '${maxTemp}°C', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red)
+                        )
+                      )
+                    ],
+                  ),
+                ),
                 Container(
                 
-              //mainAxisAlignment: MainAxisAlignment.center,
-              child: 
-                FutureBuilder(
-                  future: getWeatherCode(Field_utils.getCentroid(field.points)),
-                  builder: (context, AsyncSnapshot<int> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
-                        width: 15,
-                        height: 15,
-                        //child: CircularProgressIndicator( strokeWidth: 2,)
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Image(image:AssetImage('assets/images/${snapshot.data}.png'), width: 80, height: 80);
-                    }
-                  },
-              ),
-            ),
-            Container(
-              // margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FutureBuilder(
-                    future: getMinTemperature(Field_utils.getCentroid(field.points)),
-                    builder: (context, AsyncSnapshot<double> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container(
-                          width: 15,
-                          height: 15,
-                          child: CircularProgressIndicator( strokeWidth: 2,)
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Container(
-                          
-                          height: 45,
-                          child: Text(
-                            '${snapshot.data}°C', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.blue)
-                          )
-                        );
-                      }
-                    },
-                  ),
-                  FutureBuilder(
-                    future: getMaxTemperature(Field_utils.getCentroid(field.points)),
-                    builder: (context, AsyncSnapshot<double> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Container(
-                          width: 15,
-                          height: 15,
-                          child: CircularProgressIndicator( strokeWidth: 2,)
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return Container(
-                        
-                          height: 45,
-                          child: Text(
-                            '${snapshot.data}°C', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red)
-                          )
-                        );
-                      }
-                    },
-                  )
-                ],
-              ),
-            ),
-            Container(
-            
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    // margin: const EdgeInsets.only(left: 20),
-                    child: Row(
-                      children: [
-                        Image(image: AssetImage('assets/images/precipitations.png'), width: 30, height: 30),
-                        FutureBuilder(
-                          future: getDailyPrecipitation(Field_utils.getCentroid(field.points)),
-                          builder: (context, AsyncSnapshot<double> snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Container(
-                                width: 15,
-                                height: 15,
-                                child: CircularProgressIndicator( strokeWidth: 2,)
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              return Container(
-                                width: 100,
-                                height: 35,
-                                child: Text(
-                                  '${snapshot.data}mm', style: TextStyle(fontSize: 25)
-                                )
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    ),
-                  Container(
-                    // margin: const EdgeInsets.only(right: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-  
-                        FutureBuilder(
-                          future: getCurrentHumidity(Field_utils.getCentroid(field.points)),
-                          builder: (context, AsyncSnapshot<int> snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Container(
-                                width: 15,
-                                height: 15,
-                                child: CircularProgressIndicator( strokeWidth: 2,)
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              return Container(
-                                width: 55,
-                                height: 35,
-                                child: Text(
-                                  '${snapshot.data}%', style: TextStyle(fontSize: 25, color: Colors.orange)
-                                )
-                              );
-                            }
-                          },
-                        ),
-                        Image(image: AssetImage('assets/images/humidity.png'), width: 30, height: 30),
-                      ],
-                    )
-                  )
-                ],
-              ),
-            ),
-              ],
-              ),
-          ),
-          FutureBuilder(
-            future: getWeatherForecast(Field_utils.getCentroid(field.points)), 
-            builder: (context, AsyncSnapshot<MeteoForecast_model> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(
-                  width: 15,
-                  height: 15,
-                  child: CircularProgressIndicator( strokeWidth: 2,)
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return Builder(builder: (context) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      for (int i = 0; i < 3; i++)
-                        ForecastWidget(
-                          weatherCode: snapshot.data!.weatherCode[i],
-                          minTemp: snapshot.data!.minTemp[i],
-                          maxTemp: snapshot.data!.maxTemp[i],
-                          precipitation: snapshot.data!.precipitation[i],
-                          date: snapshot.data!.date[i],
+                      Container(
+                        // margin: const EdgeInsets.only(left: 20),
+                        child: Row(
+                          children: [
+                            Image(image: AssetImage('assets/images/precipitations.png'), width: 30, height: 30),
+                            Container(
+                              width: 100,
+                              height: 35,
+                              child: Text(
+                                '${dailyPrecipitation}mm', style: TextStyle(fontSize: 25)
+                              )
+                            )
+                          ],
                         ),
+                        ),
+                      Container(
+                        // margin: const EdgeInsets.only(right: 20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                          
+                            Container(
+                                    width: 55,
+                                    height: 35,
+                                    child: Text(
+                                      '${currentHumidity}%', style: TextStyle(fontSize: 25, color: Colors.orange)
+                                    )
+                                  ),
+                            Image(image: AssetImage('assets/images/humidity.png'), width: 30, height: 30),
+                          ],
+                        )
+                      )
                     ],
-                  );
-                } 
-                );
-              }
-            },
-            )
-          
-        ],
-      )
+                  ),
+                ),
+                  ],
+                  ),
+              ),
+              Builder(builder: (context) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                        children: [
+                          for (int i = 0; i < 3; i++)
+                            ForecastWidget(
+                              weatherCode: forecast.weatherCode[i],
+                              minTemp: forecast.minTemp[i],
+                              maxTemp: forecast.maxTemp[i],
+                              precipitation: forecast.precipitation[i],
+                              date: forecast.date[i],
+                            ),
+                        ],
+                      );
+                    } 
+                    )
+
+            ],
+          )
+        );
+        }
+      }
     );
   }
 }
