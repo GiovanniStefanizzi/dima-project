@@ -36,13 +36,14 @@ class _LoginState extends State<Login> {
             
           
             child: Container(
+              width: screenWidth * 0.8,
               height: screenHeight * 0.5,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: const [
                   BoxShadow(
                     color: Color.fromARGB(44, 0, 0, 0),
-                    blurRadius: 25.0,
+                    blurRadius: 25.0, 
                     spreadRadius: 0.0,
                     offset: Offset(0.0, 0.0),
                   )
@@ -58,25 +59,29 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: ThemeOptions.inputDecoration('email', 'email'),
+                    SizedBox(
+                      height: screenHeight*0.045,
+                      width: screenWidth*0.5,
+                      child: TextFormField(
+                        style: TextStyle(
+                          fontSize: screenWidth*0.045,
+                        ),                    
+                        textAlignVertical: TextAlignVertical.center,  
+                        controller: _emailController,
+                        decoration: ThemeOptions.inputDecoration('email', 'email', context),
+                      ),
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        TextFormField(
-                          obscureText: true,
-                          controller: _passwordController,
-                          decoration: ThemeOptions.inputDecoration('password', 'password'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty){
-                              return "insert a password";
-                            }
-                            if (value.length < 8) {
-                              return 'Password must be at least 8 characters';
-                            }
-                            return null;
-                          },
+                        SizedBox(
+                          height: screenHeight*0.045,
+                          width: screenWidth*0.5,
+                          child: TextFormField(
+                            obscureText: true,
+                            controller: _passwordController,
+                            decoration: ThemeOptions.inputDecoration('password', 'password', context),
+                          ),
                         ),
                         SizedBox(height: screenHeight*0.03),
                         TextButton(
@@ -87,19 +92,28 @@ class _LoginState extends State<Login> {
                         child: const Text('New user? Sign up!'))
                       ],
                     ),
-                    ElevatedButton(
-                      style: ThemeOptions.elevatedButtonStyle(),
-                      onPressed: () async {
-                        _signIn();
-                      },
-                      child: const Text('sign in')),
-                    ElevatedButton(
-                      style: ThemeOptions.elevatedButtonStyle(),
-                      onPressed: () {
-                        
-                        _signInWithGoogle();
-                      },
-                      child: const Text('sign in with Google'))
+                    SizedBox(
+                      
+                      width: screenWidth*0.5,
+                      height: screenHeight*0.04,
+                      child: ElevatedButton(
+                        style: ThemeOptions.elevatedButtonStyle(context),
+                        onPressed: () async {
+                          _signIn();
+                        },
+                        child: const Text('sign in')),
+                    ),
+                    SizedBox(
+                      width: screenWidth*0.5,
+                      height: screenHeight*0.04,
+                      child: ElevatedButton(
+                        style: ThemeOptions.elevatedButtonStyle(context),
+                        onPressed: () {
+                          
+                          _signInWithGoogle();
+                        },
+                        child: const Text('sign in with Google')),
+                    )
                     ]))),
           ),
         ));
@@ -141,6 +155,7 @@ void _signIn() async {
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
         textColor: Colors.red,
+        backgroundColor: Colors.white,
         fontSize: 16.0
     );
     }

@@ -30,6 +30,11 @@ class _accountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+
     return Scaffold(
       resizeToAvoidBottomInset : false,
       appBar: AppBar(
@@ -41,15 +46,17 @@ class _accountScreenState extends State<AccountScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(Icons.account_circle, 
-            //put size equal to 10% of the screen height 
-            size: 0.2 * MediaQuery.of(context).size.height),
+              //put size equal to 10% of the screen height 
+              size: 0.15 * MediaQuery.of(context).size.height),
+            SizedBox(height: screenHeight * 0.03),
             FutureBuilder(future: getUsername(), builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting || _isEditing) {
                 return CircularProgressIndicator();
               } else {
-                return Text(snapshot.data.toString());
+                return Text(snapshot.data.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth*0.07),);
               }
             }),
+            SizedBox(height: screenHeight * 0.01),
             FutureBuilder(future: getEmail(), builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return CircularProgressIndicator();
@@ -57,8 +64,9 @@ class _accountScreenState extends State<AccountScreen> {
                 return Text(snapshot.data.toString());
               }
             }),
+            SizedBox(height: screenHeight * 0.03),
             ElevatedButton(
-              style: ThemeOptions.elevatedButtonStyle(),
+              style: ThemeOptions.elevatedButtonStyle(context),
               onPressed: () {
                 //alert with text field to change username
                 showDialog(
@@ -107,6 +115,9 @@ class _accountScreenState extends State<AccountScreen> {
               child: const Text('Sign out'),
             ),
             TextButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              ),
               onPressed: () async {
                 await AuthService().deleteUser();
                 Navigator.pushNamed(context, '/login');

@@ -62,13 +62,7 @@ class _MyWidgetState extends State<FieldListScreen> {
       body:   FutureBuilder<List<Field_model>>(
         future: getFields(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ) {
-            // Show a loading indicator while waiting for the future to complete
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            // Show an error message if the future encounters an error
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
+          if (snapshot.connectionState != ConnectionState.waiting ) {
             // Build the ListView using the data returned by the future
             List<Field_model>? fields = snapshot.data;
             if (fields != null && fields.isNotEmpty) {
@@ -109,17 +103,19 @@ class _MyWidgetState extends State<FieldListScreen> {
                             width: 15,
                             height: 15,
                             //margin: EdgeInsets.only(top: screenHeight*0.05),
-                            child:const CircularProgressIndicator( strokeWidth: 2,)
+                            //child:const CircularProgressIndicator( strokeWidth: 2,)
                           );
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
                           return Container(
-                            width: screenWidth*0.08,
-                            height: screenHeight*0.05,
-                            margin: EdgeInsets.only(top: screenHeight*0.015),
+                            alignment: Alignment.center,
+                            width: screenWidth*0.1,
+                            height: screenHeight*0.1,
+                            //margin: EdgeInsets.only(top: screenHeight*0.015),
                             child: Text(
-                              '${snapshot.data}°C', style: TextStyle(fontSize: screenWidth>screenHeight?screenHeight*0.02:screenWidth*0.02)
+                              '${snapshot.data}°C',
+                              //style: TextStyle(fontSize: screenWidth>screenHeight?screenHeight*0.02:screenWidth*0.02)
                             )
                           );
                         }
@@ -144,7 +140,15 @@ class _MyWidgetState extends State<FieldListScreen> {
               // Show a message when there are no fields
               return const Center(child: Text('No fields available'));
             }
-          }
+          } 
+          //else if (snapshot.hasError) {
+          //  // Show an error message if the future encounters an error
+          //  return Center(child: Text('Error: ${snapshot.error}'));
+          //} 
+          else {
+            //Show an error message if the future encounters an error
+            return Center(child: Text('Error: ${snapshot.error}'));
+          };
         },
       ),
     );

@@ -19,6 +19,7 @@ final AuthService _auth = AuthService();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _repeatPasswordController = TextEditingController();
 
   bool isSigningUp = false;
 
@@ -53,73 +54,134 @@ final AuthService _auth = AuthService();
               margin: EdgeInsets.only(top: screenHeight*0.175, bottom: screenHeight*0.175, left: screenWidth*0.15, right: screenWidth*0.15),
               padding:  EdgeInsets.all(screenWidth*0.05),
               child: Form(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: ThemeOptions.inputDecoration('email', 'email'),
-                    ),
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: ThemeOptions.inputDecoration('username', 'username'),
-                      //decoration: InputDecoration(
-                      //  labelText: 'username',
-                      //  hintText: 'username',
-                      //  border: OutlineInputBorder(
-                      //  borderRadius: BorderRadius.circular(25)
-                      //  )
-                      //),
-                    ),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: ThemeOptions.inputDecoration('email', 'email'),
-                    ),
-                    TextFormField(
-                      obscureText: true,
-                      controller: _passwordController,
-                      decoration: ThemeOptions.inputDecoration('password', 'password'),
-                      validator: (val){
-                        if(val!.length < 8){
-                          return 'password must be at least 6 characters long';
-                        }
-                        return null;
-                      },
-                    ),
-                    Column(
-                      children: [
-                        TextFormField(
+                child: SizedBox(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: screenHeight*0.045,
+                        width: screenWidth*0.5,
+                        child: TextFormField(
+                          style: TextStyle(
+                            fontSize: screenWidth*0.045,
+                          ),   
+                          controller: _emailController,
+                          decoration: ThemeOptions.inputDecoration('email', 'email', context),
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight*0.045,
+                        width: screenWidth*0.5,
+                        child: TextFormField(
+                          style: TextStyle(
+                            fontSize: screenWidth*0.045,
+                          ),   
+                          controller: _usernameController,
+                          decoration: ThemeOptions.inputDecoration('username', 'username', context),
+                          //decoration: InputDecoration(
+                          //  labelText: 'username',
+                          //  hintText: 'username',
+                          //  border: OutlineInputBorder(
+                          //  borderRadius: BorderRadius.circular(25)
+                          //  )
+                          //),
+                        ),
+                      ),
+                      SizedBox(
+                        height: screenHeight*0.045,
+                        width: screenWidth*0.5,
+                        child: TextFormField(  
+                          style: TextStyle(
+                            fontSize: screenWidth*0.045,
+                          ),                   
                           obscureText: true,
-                          decoration: ThemeOptions.inputDecoration('repeat passwords', 'repeat passwords'),
+                          controller: _passwordController,
+                          decoration: ThemeOptions.inputDecoration('password', 'password', context),
+                          
                           validator: (val){
-                            if(val != _passwordController.text){
-                              return 'passwords do not match';
+                            if(val!.length < 8){
+                              return "password must be at least 8 characters long";
+                              //Fluttertoast.showToast(
+                              //  msg: "password must be at least 8 characters long",
+                              //  toastLength: Toast.LENGTH_SHORT,
+                              //  gravity: ToastGravity.BOTTOM,
+                              //  timeInSecForIosWeb: 1,
+                              //  textColor: Colors.red,
+                              //  fontSize: 16.0
+                              //);
                             }
                             return null;
                           },
                         ),
-                        SizedBox(height: screenHeight *0.03),
-                        TextButton(
-                          style: ThemeOptions.textButtonStyle(),
-                          onPressed: () {
-                          
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Already have an account? Sign in!'))
-                      ],
-                    ),
-                    ElevatedButton(
-                      style: ThemeOptions.elevatedButtonStyle(),
-                      onPressed: () async {
-                        _signUp();
-                      },
-                      child: const Text('sign up')),
-                    ElevatedButton(
-                      style: ThemeOptions.elevatedButtonStyle(),
-                      onPressed: () {},
-                      child: const Text('sign in with Google'))
-                    ]))),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: screenHeight*0.045,
+                            width: screenWidth*0.5,
+                            child: TextFormField(
+                              style: TextStyle(
+                                fontSize: screenWidth*0.045,
+                              ),    
+                              obscureText: true,
+                              controller: _repeatPasswordController,
+                              decoration: ThemeOptions.inputDecoration('repeat password', 'repeat password',context),
+                              validator: (val){
+                                if(val != _passwordController.text){
+                                  return "passwords do not match";
+                                  //Fluttertoast.showToast(
+                                  //  msg: "passwords do not match",
+                                  //  toastLength: Toast.LENGTH_SHORT,
+                                  //  gravity: ToastGravity.BOTTOM,
+                                  //  timeInSecForIosWeb: 1,
+                                  //  textColor: Colors.red,
+                                  //  fontSize: 16.0,
+                                  //);
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SizedBox(height: screenHeight *0.03),
+                          SizedBox(
+                            child: TextButton(
+                              style: ThemeOptions.textButtonStyle(),
+                              onPressed: () {
+                              
+                              Navigator.pop(context);
+                            },
+                            child: const Column(
+                              children: [
+                                Center(child: Text('Already have an account?')),
+                                Center(child: Text('Sign in!'))
+                              ],
+                            ),
+                          ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        width: screenWidth*0.5,
+                        height: screenHeight*0.04,
+                        child: ElevatedButton(
+                          style: ThemeOptions.elevatedButtonStyle(context),
+                          onPressed: () async {
+                            _signUp();
+                          },
+                          child: const Text('sign up')),
+                      ),
+                      SizedBox(
+                        width: screenWidth*0.5,
+                        height: screenHeight*0.04,
+                        child: ElevatedButton(
+                          style: ThemeOptions.elevatedButtonStyle(context),
+                          onPressed: () {},
+                          child: const Text('sign in with Google')),
+                      )
+                      ]),
+                ))),
           ),
         ));
   }
@@ -135,24 +197,57 @@ final AuthService _auth = AuthService();
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(username, email, password);
 
-    setState(() {
-      isSigningUp = false;
-    });
-
-    if (user != null) {
-      print("Sign up successful");
-      Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
-    } else {
+    if (_passwordController.text.length < 8) {
       Fluttertoast.showToast(
-        msg: "signup failed",
+        msg: "password must be at least 8 characters long",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
         textColor: Colors.red,
+        backgroundColor: Colors.white,
         fontSize: 16.0
-    );
+      );
+      setState(() {
+        isSigningUp = false;
+      });
+    }
+    if (_repeatPasswordController.text != _passwordController.text) {
+      Fluttertoast.showToast(
+        msg: "passwords do not match",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.red,
+        backgroundColor: Colors.white,
+        fontSize: 16.0
+      );
+      setState(() {
+        isSigningUp = false;
+      });
+    }
+    else{
+      User? user = await _auth.signUpWithEmailAndPassword(username, email, password);
+    
+
+      setState(() {
+        isSigningUp = false;
+      });
+
+      if (user != null) {
+        print("Sign up successful");
+        Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
+      } else {
+        Fluttertoast.showToast(
+          msg: "signup failed",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          textColor: Colors.red,
+          backgroundColor: Colors.white,
+          fontSize: 16.0
+      );
+      }
     }
   }
 }
