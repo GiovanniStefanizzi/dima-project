@@ -4,7 +4,6 @@ import 'package:dima/pages/field_details/forecast.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:dima/models/meteo_forecast_model.dart';
-import 'package:google_places_flutter/google_places_flutter.dart';
 
 class MeteoDetailsWidget extends StatefulWidget {
   const MeteoDetailsWidget({super.key});
@@ -19,6 +18,9 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
     final Field_model field = arguments['field'] as Field_model;
@@ -48,36 +50,41 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(screenHeight * 0.02),
+                margin: EdgeInsets.all(screenHeight * 0.0175),
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
                   borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 0), // changes position of shadow
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
-                    Container(
-                    
-                  //mainAxisAlignment: MainAxisAlignment.center,
-                  child: 
-                    Image(image:AssetImage('assets/images/${weatherCode}.png'), width: 80, height: 80)
-                ),
+                
                 Container(
                   // margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                              height: 45,
-                              child: Text(
-                                '${minTemp}°C', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.blue)
-                              )
-                            ),
-                      Container(
-                      
-                        height: 45,
+                      SizedBox(
+                        height: screenHeight * 0.06,
                         child: Text(
-                          '${maxTemp}°C', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red)
+                         '$minTemp°C', style:  TextStyle(fontSize: screenWidth * 0.06,fontWeight: FontWeight.bold, color: Colors.blue)
+                       )
+                      ),
+                      Image(image:AssetImage('assets/images/$weatherCode.png'), width: screenWidth *0.15, height: screenWidth * 0.15),
+                      SizedBox(
+                      
+                        height: screenHeight * 0.06,
+                        child: Text(
+                          '$maxTemp°C', style: TextStyle(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold, color: Colors.red)
                         )
                       )
                     ],
@@ -92,32 +99,17 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
                         // margin: const EdgeInsets.only(left: 20),
                         child: Row(
                           children: [
-                            Image(image: AssetImage('assets/images/precipitations.png'), width: 30, height: 30),
-                            Container(
-                              width: 100,
-                              height: 35,
-                              child: Text(
-                                '${dailyPrecipitation}mm', style: TextStyle(fontSize: 25)
-                              )
-                            )
+                            Image(image: const AssetImage('assets/images/precipitations.png'), width: screenHeight * 0.05, height:screenHeight * 0.05),
+                            Text('${dailyPrecipitation}mm', style: TextStyle(fontSize: screenHeight * 0.03)),                   
                           ],
                         ),
                         ),
                       Container(
                         // margin: const EdgeInsets.only(right: 20),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                          
-                            Container(
-                                    width: 55,
-                                    height: 35,
-                                    child: Text(
-                                      '${currentHumidity}%', style: TextStyle(fontSize: 25, color: Colors.orange)
-                                    )
-                                  ),
-                            Image(image: AssetImage('assets/images/humidity.png'), width: 30, height: 30),
+                            Text('$currentHumidity%', style: TextStyle(fontSize: screenHeight * 0.03, color: Colors.orange)),
+                            Image(image: AssetImage('assets/images/humidity.png'), width: screenHeight * 0.05, height:screenHeight * 0.05),
                           ],
                         )
                       )
@@ -128,23 +120,23 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
                   ),
               ),
               Builder(builder: (context) {
-                      return Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-                        children: [
-                          for (int i = 0; i < 3; i++)
-                            ForecastWidget(
-                              weatherCode: forecast.weatherCode[i],
-                              minTemp: forecast.minTemp[i],
-                              maxTemp: forecast.maxTemp[i],
-                              precipitation: forecast.precipitation[i],
-                              date: forecast.date[i],
-                            ),
-                        ],
-                      );
-                    } 
-                    )
+                  children: [
+                    for (int i = 0; i < 3; i++)
+                      ForecastWidget(
+                        weatherCode: forecast.weatherCode[i],
+                        minTemp: forecast.minTemp[i],
+                        maxTemp: forecast.maxTemp[i],
+                        precipitation: forecast.precipitation[i],
+                        date: forecast.date[i],
+                      ),
+                  ],
+                );
+              } 
+              )
 
             ],
           )

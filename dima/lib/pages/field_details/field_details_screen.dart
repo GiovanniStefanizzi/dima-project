@@ -42,7 +42,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       //print(_mapType);
     });
   }
-  Map<MapOverlayType, String> _mapUrls = {
+  final Map<MapOverlayType, String> _mapUrls = {
     MapOverlayType.ndvi: '',
     MapOverlayType.ndwi: '',
     MapOverlayType.evi: '',
@@ -88,7 +88,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       fetchMapUrls();
     });
     _pages = [
-    MeteoDetailsWidget(),
+    const MeteoDetailsWidget(),
     ActivityWidget(),
     MapsOverlayPage(updateParentData: updateDataFromChild, startingType: _mapType),
   ];
@@ -97,13 +97,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   Future<void> fetchMapUrls() async {
     final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
     final Field_model field = arguments['field'] as Field_model;
-    final _ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
+    final ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
     // final _ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
     // final _eviUrl = await getMap(field.points, MapOverlayType.evi);
     // final _saviUrl = await getMap(field.points, MapOverlayType.savi);
     // final _laiUrl = await getMap(field.points, MapOverlayType.lai);
     setState(() {
-      _mapUrls[MapOverlayType.ndvi] = _ndviUrl;
+      _mapUrls[MapOverlayType.ndvi] = ndviUrl;
       // this._ndwiUrl = _ndwiUrl;
       // this._eviUrl = _eviUrl;
       // this._saviUrl = _saviUrl;
@@ -117,9 +117,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     final Field_model field = arguments['field'] as Field_model;
     final int index = arguments['index'] as int;
 
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(field.name),
+        toolbarHeight: screenHeight*0.07,
+        title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
         actions: [
           PopupMenuButton <String>(
             onSelected: (value) {handleClick(value, index);},
@@ -173,7 +177,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       body: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height*0.4,
+            height: MediaQuery.of(context).size.height*0.5,
             child: FlutterMap(
               options: MapOptions(
                 initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
@@ -189,7 +193,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                   Polygon(
                     points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
                     color: Colors.green.withOpacity(0.2),
-                    borderStrokeWidth: 2,
+                    borderStrokeWidth: screenHeight*0.001,
                     borderColor: Colors.black,
                     isFilled: _mapType==MapOverlayType.normal ? true : false,
                   ),
@@ -220,7 +224,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
             itemBuilder: (context, index) {
               return Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.6,
+                height: MediaQuery.of(context).size.height * 0.5,
                 child: Center(
                   child: _pages[index],
                 ),
@@ -228,13 +232,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
             },
           ),
         ),
-        SizedBox(height: 20),
+        //SizedBox(height: screenHeight*0.005),
         Container(
-          width: 45,
-          height: 15,
-          margin: EdgeInsets.only(bottom: 10),
+          width: screenHeight * 0.1,
+          height: screenHeight * 0.02,
+          margin: EdgeInsets.only(bottom: screenHeight*0.01),
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 246, 243, 243),
+            color: const Color.fromARGB(255, 246, 243, 243),
             borderRadius: BorderRadius.circular(20),
            
           ),
@@ -242,12 +246,12 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(3, (index) {
               return Container(
-                margin: EdgeInsets.symmetric(horizontal: 5),
-                width: 5,
-                height: 5,
+                margin: EdgeInsets.symmetric(horizontal: screenHeight*0.005),
+                width: screenHeight*0.01,
+                height: screenHeight*0.02,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _currentPage == index ? Color.fromARGB(255, 57, 96, 1) : Color.fromARGB(255, 169, 169, 169),
+                  color: _currentPage == index ? const Color.fromARGB(255, 57, 96, 1) : const Color.fromARGB(255, 169, 169, 169),
                   
                 ),
               );

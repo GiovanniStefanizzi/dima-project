@@ -41,6 +41,9 @@ class _activityWidgetState extends State<ActivityWidget> {
     TextEditingController nameController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
 
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: FutureBuilder(
         future: getActivities(fieldIndex),
@@ -59,43 +62,48 @@ class _activityWidgetState extends State<ActivityWidget> {
                 itemBuilder: (context, index){
                   Activity activity = activities[index];
                   return ListTile(
-                    title: Text(activity.name),
-                    subtitle: Text(activity.description),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Delete activity'),
-                              content: Text('Are you sure you want to delete this activity?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  }, 
-                                  child: Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    //delete field
-                                    
-                                    Firestore().removeActivity(fieldIndex, index);
-                                    Navigator.of(context).pop();
-                                    _isEditing=true;
-                                    await Future.delayed(Duration(seconds: 1));
-                                    _isEditing=false;
-                                    setState(() {});
-                                    
-                                  },
-                                  child: Text('Delete'),
-                                ),
-                              ],
+                    title: Text(activity.name, style: TextStyle(fontSize: screenHeight*0.025)),
+                    subtitle: Text(activity.description, style: TextStyle(fontSize: screenHeight*0.02)),
+                    trailing: Wrap(
+                      children: [
+                        Text(activity.date.substring(0,10), style: TextStyle(fontSize: screenHeight*0.015, color: Colors.grey)),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Delete activity'),
+                                  content: Text('Are you sure you want to delete this activity?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }, 
+                                      child: Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        //delete field
+                                        
+                                        Firestore().removeActivity(fieldIndex, index);
+                                        Navigator.of(context).pop();
+                                        _isEditing=true;
+                                        await Future.delayed(Duration(seconds: 1));
+                                        _isEditing=false;
+                                        setState(() {});
+                                        
+                                      },
+                                      child: Text('Delete'),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -108,6 +116,7 @@ class _activityWidgetState extends State<ActivityWidget> {
         }
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 153, 194, 162),
         onPressed: ()=> showDialog(
           context: context,
           builder: (BuildContext context) {
