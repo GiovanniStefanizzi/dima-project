@@ -147,7 +147,7 @@ class _MyWidgetState extends State<FieldListScreen> {
           //} 
           else {
             //Show an error message if the future encounters an error
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: CircularProgressIndicator());
           };
         },
       ),

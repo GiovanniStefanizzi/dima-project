@@ -46,6 +46,8 @@ class _MapScreenState extends State<MapScreen>{
 
   int _polygonIdCounter = 1;
 
+  
+
 
   static const CameraPosition _initialPosition = CameraPosition(
     target: LatLng(45.47822174474001, 9.227324251700615),
@@ -59,7 +61,7 @@ class _MapScreenState extends State<MapScreen>{
     //   _onChanged();
     //   }
     // );
-    _setMarker(LatLng(45.47822174474001, 9.227324251700615));
+    //_setMarker(LatLng(45.47822174474001, 9.227324251700615));
     //get postition
     currentLocation.getLocation().then((LocationData value){
       setState(() {
@@ -98,8 +100,11 @@ class _MapScreenState extends State<MapScreen>{
     setState(() {
       _markers.add(
         Marker(
-          markerId:MarkerId('marker'), 
-          position: point,)
+          markerId:const MarkerId('marker'), 
+          position: point,
+          //bitmap from png,
+          
+          )
       );
     });
   }
@@ -221,9 +226,15 @@ Future<void> _createField() async {
     return geoPoints;
   }
 
+  
+
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -231,15 +242,37 @@ Future<void> _createField() async {
           
           children: [
             AppBar(
+              toolbarHeight: screenHeight*0.07,
               title: const Text('Map')
             ),
             Container(
-              height: 500,
+              height: screenHeight*0.6,
               child:
                 Stack(
                   children: [   
                     
-                    currentLatLng == null ? Container(child:CircularProgressIndicator()) : 
+                    currentLatLng == null ? Stack(
+                      children: [
+                        GoogleMap(
+                          gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),].toSet(),
+                          initialCameraPosition: _initialPosition,
+                          onMapCreated: (GoogleMapController controller)
+                          {
+                            _controller.complete(controller);
+                          },
+                          mapType: MapType.hybrid,
+                          markers: _markers,
+                          polygons: _polygons,
+                          onTap: (point){ 
+                            _addPoint(point);
+                          },
+                        ),
+                        Center(
+                          
+                          child: const CircularProgressIndicator(),
+                        )
+                      ],
+                    ) :
                     GoogleMap(
                       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
                                               new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
@@ -315,10 +348,13 @@ Future<void> _createField() async {
                     Positioned(
                       bottom: 30,
                       left: 15,
-                      child: FloatingActionButton(onPressed:(){
+                      child: FloatingActionButton(
+                       backgroundColor:   const Color.fromARGB(255, 153, 194, 162),
+                        onPressed:(){
                         setState(() {
                           if(_polygonLatLongs.isNotEmpty) {
                             _polygonLatLongs.removeLast();
+                            _markers.remove(_markers.elementAt(_markers.length - 1));
                             if(_polygonLatLongs.isEmpty){
                               _polygons.remove(_polygons.elementAt(0));
                             }
@@ -408,7 +444,7 @@ Future<void> _createField() async {
                     TextField(
                       controller: _dateController,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.calendar_month),
+                        prefixIcon: Icon(Icons.calendar_month, color: const Color.fromARGB(255, 153, 194, 162),),
                         hintText: 'Seeding date',
                         filled: true,
                         fillColor: Colors.white,
@@ -437,8 +473,8 @@ Future<void> _createField() async {
                       Switch(
                         value: _frostController,
                         inactiveTrackColor: Colors.grey,
-                        inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
-                        activeTrackColor: Color.fromARGB(255, 153, 208, 3),
+                        inactiveThumbColor: const Color.fromARGB(255, 75, 75, 75),
+                        activeTrackColor: const Color.fromARGB(255, 153, 194, 162),
                         activeColor: const Color.fromARGB(255, 77, 115, 78),
                         onChanged: (bool value){
                           setState(() {
@@ -456,7 +492,7 @@ Future<void> _createField() async {
                       value: _hailController,
                       inactiveTrackColor: Colors.grey,
                       inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
-                      activeTrackColor: Color.fromARGB(255, 153, 208, 3),
+                      activeTrackColor: const Color.fromARGB(255, 153, 194, 162),
                       activeColor: const Color.fromARGB(255, 77, 115, 78),
                       onChanged: (bool value){
                         setState(() {
@@ -479,12 +515,12 @@ Future<void> _createField() async {
                         sleep(const Duration(seconds: 1));
                         //todo caricatore
                         Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => Homepage()),
+                          MaterialPageRoute(builder: (context) => const Homepage()),
                           (Route<dynamic> route) => false,
                         );
                       }
                     },
-                    child: const Icon(Icons.save),
+                    child: const Icon(Icons.save, color: Color.fromARGB(255, 153, 194, 162),),
                   )
                 ],
                 ),

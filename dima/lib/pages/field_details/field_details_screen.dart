@@ -121,6 +121,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: screenHeight*0.07,
         title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
@@ -282,7 +283,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                   ),
                   TextButton(
                     onPressed: () async {
-                      //delete field
+                      //Fdelete field
                       Firestore().removeField(index);
                       await Future.delayed(Duration(seconds: 1));
                       //todo caricatore

@@ -39,7 +39,7 @@ class ForecastWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Image(image:AssetImage('assets/images/${convertCodesToIcons(weatherCode)}.png'), width: screenHeight * 0.06, height: screenHeight * 0.06),
+                  Image(image:AssetImage('assets/images/${convertCodesToIcons(weatherCode)}.png'), width: screenWidth * 0.1 , height: screenHeight * 0.06),
                   Text('$precipitation mm', style: TextStyle(fontSize: screenHeight *0.015)),
                 ],
               ),

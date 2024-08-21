@@ -74,6 +74,7 @@ class _accountScreenState extends State<AccountScreen> {
                   builder: (BuildContext context) {
                     final TextEditingController _controller = TextEditingController();
                     return AlertDialog(
+                      //backgroundColor: Color.fromARGB(255, 153, 194, 162),
                       title: const Text('Change username'),
                       content: TextField(
                         controller: _controller,
@@ -81,14 +82,13 @@ class _accountScreenState extends State<AccountScreen> {
                       ),
                       actions: <Widget>[
                         TextButton(
-                          style: ThemeOptions.textButtonStyle(),
+                          
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Cancel'),
+                          child: const Text('Cancel',style: TextStyle()),
                         ),
                         TextButton(
-                          style: ThemeOptions.textButtonStyle(),
                           onPressed: () async {
                             await Firestore().updateUsername(_controller.text);
 
@@ -98,7 +98,7 @@ class _accountScreenState extends State<AccountScreen> {
                             _isEditing=false;
                             setState(() {});
                           },
-                          child: const Text('Change'),
+                          child: const Text('Change', style: TextStyle()),
                         ),
                       ],
                     );

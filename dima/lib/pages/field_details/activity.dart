@@ -74,6 +74,7 @@ class _activityWidgetState extends State<ActivityWidget> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
+                                  backgroundColor: const Color.fromARGB(255, 153, 194, 162),
                                   title: Text('Delete activity'),
                                   content: Text('Are you sure you want to delete this activity?'),
                                   actions: [
@@ -114,50 +115,52 @@ class _activityWidgetState extends State<ActivityWidget> {
               }
           }
         }
-      ),
+      ),  
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 153, 194, 162),
         onPressed: ()=> showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Add Activity'),
-              content: Column(
-                children: [
-                  TextField(
-                    controller: nameController ,
-                    decoration: InputDecoration(
-                      labelText: 'Activity Name',
+            return SingleChildScrollView(
+              child: AlertDialog(
+                title: Text('Add Activity'),
+                content: Column(
+                  children: [
+                    TextField(
+                      controller: nameController ,
+                      decoration: InputDecoration(
+                        labelText: 'Activity Name',
+                      ),
                     ),
-                  ),
-                  TextField(
-                    controller: descriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'Activity Description',
+                    TextField(
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        labelText: 'Activity Description',
+                      ),
                     ),
+                  ],  
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('Cancel'),
                   ),
-                ],  
+                  TextButton(
+                    onPressed: () async {
+                      String name = nameController.text;
+                      String description= descriptionController.text;
+                      Activity newActivity = Activity(name: name, description: description, date: DateTime.now().toString());
+                      await Firestore().addActivity(newActivity.toMap(), fieldIndex);
+                      Navigator.of(context).pop();
+                      _isEditing=true;
+                      await Future.delayed(Duration(seconds: 1));
+                      _isEditing=false;
+                      setState(() {});
+                    },
+                    child: Text('Add'),
+                  ),
+                ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    String name = nameController.text;
-                    String description= descriptionController.text;
-                    Activity newActivity = Activity(name: name, description: description, date: DateTime.now().toString());
-                    await Firestore().addActivity(newActivity.toMap(), fieldIndex);
-                    Navigator.of(context).pop();
-                    _isEditing=true;
-                    await Future.delayed(Duration(seconds: 1));
-                    _isEditing=false;
-                    setState(() {});
-                  },
-                  child: Text('Add'),
-                ),
-              ],
             );
           }
         ) ,

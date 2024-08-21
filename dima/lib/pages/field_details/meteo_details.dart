@@ -120,20 +120,25 @@ class _MeteoDetailsWidgetState extends State<MeteoDetailsWidget> {
                   ),
               ),
               Builder(builder: (context) {
-                return Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                  children: [
-                    for (int i = 0; i < 3; i++)
-                      ForecastWidget(
-                        weatherCode: forecast.weatherCode[i],
-                        minTemp: forecast.minTemp[i],
-                        maxTemp: forecast.maxTemp[i],
-                        precipitation: forecast.precipitation[i],
-                        date: forecast.date[i],
-                      ),
-                  ],
+                return Container(
+                  
+                  
+                  
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  
+                    children: [
+                      for (int i = 0; i < 3; i++)
+                        ForecastWidget(
+                          weatherCode: forecast.weatherCode[i],
+                          minTemp: forecast.minTemp[i],
+                          maxTemp: forecast.maxTemp[i],
+                          precipitation: forecast.precipitation[i],
+                          date: forecast.date[i],
+                        ),
+                    ],
+                  ),
                 );
               } 
               )

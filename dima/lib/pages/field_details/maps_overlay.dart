@@ -69,9 +69,10 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 const Text('NDVI'),
                 Row(
                   children: [
-                    Tooltip(
+                    const Tooltip(
+                      triggerMode:TooltipTriggerMode.tap,
                       message: 'Normalized Difference Vegetation Index',
-                      child: const Icon(Icons.info_outline, color: Colors.blue)
+                      child: Icon(Icons.info_outline, color: Colors.blue)
                     ),
                     Radio(
                       value: MapOverlayType.ndvi,
@@ -93,7 +94,11 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 const Text('NDWI'),
                 Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.blue),
+                    const Tooltip(
+                      triggerMode:TooltipTriggerMode.tap,
+                      message: 'Normalized Difference Water Index',
+                      child: Icon(Icons.info_outline, color: Colors.blue)
+                    ),
                     Radio(
                       value: MapOverlayType.ndwi,
                       groupValue: _mapType,
@@ -114,7 +119,11 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 const Text('EVI'),
                 Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.blue),
+                    const Tooltip(
+                      triggerMode:TooltipTriggerMode.tap,
+                      message: 'Enhanced Vegetation Index',
+                      child: Icon(Icons.info_outline, color: Colors.blue)
+                    ),
                     Radio(
                       value: MapOverlayType.evi,
                       groupValue: _mapType,
@@ -136,7 +145,11 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 const Text('SAVI'),
                 Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.blue),
+                    const Tooltip(
+                      triggerMode:TooltipTriggerMode.tap,
+                      message: 'Soil Adjusted Vegetation Index',
+                      child: Icon(Icons.info_outline, color: Colors.blue)
+                    ),
                     Radio(
                       value: MapOverlayType.savi,
                       groupValue: _mapType,
@@ -158,7 +171,11 @@ class _MyWidgetState extends State<MapsOverlayPage> {
                 const Text('LAI'),
                 Row(
                   children: [
-                    const Icon(Icons.info_outline, color: Colors.blue),
+                    const Tooltip(
+                      triggerMode:TooltipTriggerMode.tap,
+                      message: 'Leaf Area Index',
+                      child: Icon(Icons.info_outline, color: Colors.blue)
+                    ),
                     Radio(
                       value: MapOverlayType.lai,
                       groupValue: _mapType,
