@@ -62,8 +62,8 @@ class _activityWidgetState extends State<ActivityWidget> {
                 itemBuilder: (context, index){
                   Activity activity = activities[index];
                   return ListTile(
-                    title: Text(activity.name, style: TextStyle(fontSize: screenHeight*0.025)),
-                    subtitle: Text(activity.description, style: TextStyle(fontSize: screenHeight*0.02)),
+                    title: Text(activity.name, style: TextStyle(fontSize: screenHeight*0.02)),
+                    subtitle: Text(activity.description, style: TextStyle(fontSize: screenHeight*0.015)),
                     trailing: Wrap(
                       children: [
                         Text(activity.date.substring(0,10), style: TextStyle(fontSize: screenHeight*0.015, color: Colors.grey)),
@@ -121,45 +121,48 @@ class _activityWidgetState extends State<ActivityWidget> {
         onPressed: ()=> showDialog(
           context: context,
           builder: (BuildContext context) {
-            return SingleChildScrollView(
-              child: AlertDialog(
-                title: Text('Add Activity'),
-                content: Column(
-                  children: [
-                    TextField(
-                      controller: nameController ,
-                      decoration: InputDecoration(
-                        labelText: 'Activity Name',
+            return Align(
+              alignment: Alignment.center ,
+              child: SingleChildScrollView(
+                child: AlertDialog(
+                  title: Text('Add Activity'),
+                  content: Column(
+                    children: [
+                      TextField(
+                        controller: nameController ,
+                        decoration: InputDecoration(
+                          labelText: 'Activity Name',
+                        ),
                       ),
-                    ),
-                    TextField(
-                      controller: descriptionController,
-                      decoration: InputDecoration(
-                        labelText: 'Activity Description',
+                      TextField(
+                        controller: descriptionController,
+                        decoration: InputDecoration(
+                          labelText: 'Activity Description',
+                        ),
                       ),
+                    ],  
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Cancel'),
                     ),
-                  ],  
+                    TextButton(
+                      onPressed: () async {
+                        String name = nameController.text;
+                        String description= descriptionController.text;
+                        Activity newActivity = Activity(name: name, description: description, date: DateTime.now().toString());
+                        await Firestore().addActivity(newActivity.toMap(), fieldIndex);
+                        Navigator.of(context).pop();
+                        _isEditing=true;
+                        await Future.delayed(Duration(seconds: 1));
+                        _isEditing=false;
+                        setState(() {});
+                      },
+                      child: Text('Add'),
+                    ),
+                  ],
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      String name = nameController.text;
-                      String description= descriptionController.text;
-                      Activity newActivity = Activity(name: name, description: description, date: DateTime.now().toString());
-                      await Firestore().addActivity(newActivity.toMap(), fieldIndex);
-                      Navigator.of(context).pop();
-                      _isEditing=true;
-                      await Future.delayed(Duration(seconds: 1));
-                      _isEditing=false;
-                      setState(() {});
-                    },
-                    child: Text('Add'),
-                  ),
-                ],
               ),
             );
           }

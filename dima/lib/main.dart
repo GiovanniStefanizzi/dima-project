@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:dima/pages/field_details/modify_field_screen.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/pages/homepage.dart';
@@ -5,6 +8,7 @@ import 'package:dima/pages/map/map_screen.dart';
 import 'package:dima/pages/register/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'pages/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -19,6 +23,27 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
+  Size size = view.physicalSize;
+  double width = size.width;
+  double height = size.height;
+  var shortestSide = width < height ? width : height;
+  print(shortestSide);
+  final bool useMobileLayout = shortestSide < 600;
+    
+  if(useMobileLayout){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+  else{
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
   //await FirebaseAuth.instance.signOut();
 
   // Inizializza le notifiche
@@ -31,8 +56,22 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget { 
+class MyApp extends StatefulWidget { 
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    super.initState();
+    
+  }
 
   @override
   Widget build(BuildContext context) {

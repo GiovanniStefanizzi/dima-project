@@ -24,99 +24,205 @@ class _LoginState extends State<Login> {
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    bool useMobileLayout = screenWidth < 600;
+    var isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 197, 237, 172),
-            
-            ),
-            
-          
+    if(useMobileLayout){
+      return Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
             child: Container(
-              width: screenWidth * 0.8,
-              height: screenHeight * 0.5,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color.fromARGB(44, 0, 0, 0),
-                    blurRadius: 25.0, 
-                    spreadRadius: 0.0,
-                    offset: Offset(0.0, 0.0),
-                  )
-                ],
-                borderRadius: BorderRadius.circular(15.0),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 197, 237, 172),
+              
               ),
-              margin: EdgeInsets.only(top: screenHeight*0.25, bottom: screenHeight*0.25, left: screenWidth*0.15, right: screenWidth*0.15),
-              padding:  EdgeInsets.all(screenWidth*0.05),
-              child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: screenHeight*0.045,
-                      width: screenWidth*0.5,
-                      child: TextFormField(
-                        style: TextStyle(
-                          fontSize: screenWidth*0.045,
-                        ),                    
-                        textAlignVertical: TextAlignVertical.center,  
-                        controller: _emailController,
-                        decoration: ThemeOptions.inputDecoration('email', 'email', context),
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          height: screenHeight*0.045,
-                          width: screenWidth*0.5,
-                          child: TextFormField(
-                            obscureText: true,
-                            controller: _passwordController,
-                            decoration: ThemeOptions.inputDecoration('password', 'password', context),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight*0.03),
-                        TextButton(
-                          style: ThemeOptions.textButtonStyle(),
-                          onPressed: () {
-                          Navigator.pushNamed(context, '/register');
-                        },
-                        child: const Text('New user? Sign up!'))
-                      ],
-                    ),
-                    SizedBox(
-                      
-                      width: screenWidth*0.5,
-                      height: screenHeight*0.04,
-                      child: ElevatedButton(
-                        style: ThemeOptions.elevatedButtonStyle(context),
-                        onPressed: () async {
-                          _signIn();
-                        },
-                        child: const Text('sign in')),
-                    ),
-                    SizedBox(
-                      width: screenWidth*0.5,
-                      height: screenHeight*0.04,
-                      child: ElevatedButton(
-                        style: ThemeOptions.elevatedButtonStyle(context),
-                        onPressed: () {
-                          
-                          _signInWithGoogle();
-                        },
-                        child: const Text('sign in with Google')),
+              
+            
+              child: Container(
+                width:  screenWidth * 0.8,
+                height: screenHeight * 0.5,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(44, 0, 0, 0),
+                      blurRadius: 25.0, 
+                      spreadRadius: 0.0,
+                      offset: Offset(0.0, 0.0),
                     )
-                    ]))),
-          ),
-        ));
+                  ],
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                margin: EdgeInsets.only(top: screenHeight*0.25, bottom: screenHeight*0.25, left: screenWidth*0.15, right: screenWidth*0.15),
+                padding:  EdgeInsets.all(screenWidth*0.05),
+                child: Form(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: screenHeight*0.045,
+                        width: screenWidth*0.5,
+                        child: TextFormField(
+                          style: TextStyle(
+                            fontSize: screenWidth*0.045,
+                          ),                    
+                          textAlignVertical: TextAlignVertical.center,  
+                          controller: _emailController,
+                          decoration: ThemeOptions.inputDecoration('email', 'email', context),
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            height: screenHeight*0.045,
+                            width: screenWidth*0.5,
+                            child: TextFormField(
+                              obscureText: true,
+                              controller: _passwordController,
+                              decoration: ThemeOptions.inputDecoration('password', 'password', context),
+                            ),
+                          ),
+                          SizedBox(height: screenHeight*0.03),
+                          TextButton(
+                            style: ThemeOptions.textButtonStyle(),
+                            onPressed: () {
+                            Navigator.pushNamed(context, '/register');
+                          },
+                          child: const Text('New user? Sign up!'))
+                        ],
+                      ),
+                      SizedBox(
+                        
+                        width: screenWidth*0.5,
+                        height: screenHeight*0.04,
+                        child: ElevatedButton(
+                          style: ThemeOptions.elevatedButtonStyle(context),
+                          onPressed: () async {
+                            _signIn();
+                          },
+                          child: const Text('sign in')),
+                      ),
+                      SizedBox(
+                        width: screenWidth*0.5,
+                        height: screenHeight*0.04,
+                        child: ElevatedButton(
+                          style: ThemeOptions.elevatedButtonStyle(context),
+                          onPressed: () {
+                            
+                            _signInWithGoogle();
+                          },
+                          child: const Text('sign in with Google')),
+                      )
+                      ]))),
+            ),
+          )
+        );
+    }
+    else{
+      //TABLET
+      return Scaffold(
+          //resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 197, 237, 172),
+              
+              ),
+              
+            
+              child: Container(
+                width:  screenWidth * 0.6,
+                height: screenHeight * 0.7,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromARGB(44, 0, 0, 0),
+                      blurRadius: 25.0, 
+                      spreadRadius: 0.0,
+                      offset: Offset(0.0, 0.0),
+                    )
+                  ],
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                margin: EdgeInsets.only(top: screenHeight*0.15, bottom: screenHeight*0.15, left: screenWidth*0.35, right: screenWidth*0.35),
+                padding:  EdgeInsets.all(screenWidth*0.04),
+                child: Form(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.05, fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: screenHeight*0.045,
+                        width: screenWidth*0.5,
+                        child: TextFormField(
+                          style: TextStyle(
+                            fontSize: screenWidth*0.015,
+                          ),
+                                           
+                          textAlignVertical: TextAlignVertical.center,  
+                          controller: _emailController,
+                          decoration: ThemeOptions.inputDecorationTablet('email', 'email', context),
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            height: screenHeight*0.045,
+                            width: screenWidth*0.5,
+                            child: TextFormField(
+                              style: TextStyle(
+                                fontSize: screenWidth*0.015,
+                              ),
+                              obscureText: true,
+                              controller: _passwordController,
+                              decoration: ThemeOptions.inputDecorationTablet('password', 'password', context),
+                            ),
+                          ),
+                          SizedBox(height: screenHeight*0.03),
+                          TextButton(
+                            style: ThemeOptions.textButtonStyleTablet(),
+                            onPressed: () {
+                            Navigator.pushNamed(context, '/register');
+                          },
+                          child: const Text('New user? Sign up!'))
+                        ],
+                      ),
+                      SizedBox(
+                        
+                        width: screenWidth*0.5,
+                        height: screenHeight*0.04,
+                        child: ElevatedButton(
+                          style: ThemeOptions.elevatedButtonStyleTablet(context),
+                          onPressed: () async {
+                            _signIn();
+                          },
+                          child: const Text('sign in')),
+                      ),
+                      SizedBox(
+                        width: screenWidth*0.5,
+                        height: screenHeight*0.04,
+                        child: ElevatedButton(
+                          style: ThemeOptions.elevatedButtonStyleTablet(context),
+                          onPressed: () {
+                            
+                            _signInWithGoogle();
+                          },
+                          child: const Text('sign in with Google')),
+                      )
+                      ]))),
+            ),
+          )
+        );
+    }
+    
   }
 
 void _signInWithGoogle() async {

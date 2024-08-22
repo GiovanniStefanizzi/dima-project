@@ -119,149 +119,240 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    bool useMobileLayout = screenWidth < 600;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: screenHeight*0.07,
-        title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
-        actions: [
-          PopupMenuButton <String>(
-            onSelected: (value) {handleClick(value, index);},
-            itemBuilder: (BuildContext context){
-              return{'Delete', 'Change settings'}.map((String choice){
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          )
-          //IconButton(
-          //  icon: Icon(Icons.delete),
-          //  onPressed: () {
-          //    //show alert dialog asking for confirmation to delete
-          //    showDialog(
-          //      context: context,
-          //      builder: (BuildContext context) {
-          //        return AlertDialog(
-          //          title: Text('Delete field'),
-          //          content: Text('Are you sure you want to delete this field?'),
-          //          actions: [
-          //            TextButton(
-          //              onPressed: () {
-          //                Navigator.of(context).pop();
-          //              },
-          //              child: Text('Cancel'),
-          //            ),
-          //            TextButton(
-          //              onPressed: () async {
-          //                //delete field
-          //                Firestore().removeField(index);
-          //                await Future.delayed(Duration(seconds: 1));
-          //                //todo caricatore
-          //                Navigator.of(context).pushAndRemoveUntil(
-          //                  MaterialPageRoute(builder: (context) => FieldListScreen()),
-          //                  (Route<dynamic> route) => false,
-          //                );
-          //              },
-          //              child: Text('Delete'),
-          //            ),
-          //          ],
-          //        );
-          //      },
-          //    );
-          //  },
-          //),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height*0.5,
-            child: FlutterMap(
-              options: MapOptions(
-                initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
-                initialZoom: Field_utils.calculateZoomLevel(field.points, context),
-              ),
-              children: [
-                TileLayer(
-                  //isri imagery
-                  urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-                  userAgentPackageName: 'dima',
+    if(useMobileLayout){
+      return Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          toolbarHeight: screenHeight*0.07,
+          title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
+          actions: [
+            PopupMenuButton <String>(
+              onSelected: (value) {handleClick(value, index);},
+              itemBuilder: (BuildContext context){
+                return{'Delete', 'Change settings'}.map((String choice){
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            )
+          ],
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height*0.5,
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
+                  initialZoom: Field_utils.calculateZoomLevel(field.points, context),
                 ),
-                PolygonLayer(polygons: [
-                  Polygon(
-                    points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                    color: Colors.green.withOpacity(0.2),
-                    borderStrokeWidth: screenHeight*0.001,
-                    borderColor: Colors.black,
-                    isFilled: _mapType==MapOverlayType.normal ? true : false,
+                children: [
+                  TileLayer(
+                    //isri imagery
+                    urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                    userAgentPackageName: 'dima',
                   ),
-                ],),
-                _mapUrls[_mapType] == null ? Container() :
-                OverlayImageLayer(
-                  overlayImages: [
-                    OverlayImage(
-                      bounds: getPolygonBounds(field.points),
-                      opacity: 0.5,
-                      imageProvider: NetworkImage(_mapUrls[_mapType]!),
+                  PolygonLayer(polygons: [
+                    Polygon(
+                      points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
+                      color: Colors.green.withOpacity(0.2),
+                      borderStrokeWidth: screenHeight*0.001,
+                      borderColor: Colors.black,
+                      isFilled: _mapType==MapOverlayType.normal ? true : false,
                     ),
-                  ],
-                )
-              ],
+                  ],),
+                  _mapUrls[_mapType] == null ? Container() :
+                  OverlayImageLayer(
+                    overlayImages: [
+                      OverlayImage(
+                        bounds: getPolygonBounds(field.points),
+                        opacity: 0.5,
+                        imageProvider: NetworkImage(_mapUrls[_mapType]!),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+              itemBuilder: (context, index) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: Center(
+                    child: _pages[index],
+                  ),
+                );
+              },
             ),
           ),
-          Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            scrollDirection: Axis.horizontal,
-            itemCount: 3,
-            onPageChanged: (int page) {
-              setState(() {
-                _currentPage = page;
-              });
-            },
-            itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: Center(
-                  child: _pages[index],
-                ),
-              );
-            },
+          //SizedBox(height: screenHeight*0.005),
+          Container(
+            width: screenHeight * 0.1,
+            height: screenHeight * 0.02,
+            margin: EdgeInsets.only(bottom: screenHeight*0.01),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 246, 243, 243),
+              borderRadius: BorderRadius.circular(20),
+            
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(3, (index) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: screenHeight*0.005),
+                  width: screenHeight*0.01,
+                  height: screenHeight*0.02,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _currentPage == index ? const Color.fromARGB(255, 57, 96, 1) : const Color.fromARGB(255, 169, 169, 169),
+                    
+                  ),
+                );
+              }),
+            ),
           ),
+          ],
+        ) ,
+      );
+    }
+    else{
+      //*********************//
+
+      //TABLET LAYOUT
+
+      //*********************//
+      
+      return Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          shape:const Border(
+              bottom: BorderSide(
+              color: Color.fromARGB(255, 220, 220, 220),
+              width: 1
+            ),
+          ),
+          toolbarHeight: screenHeight*0.07,
+          title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
+          actions: [
+            PopupMenuButton <String>(
+              onSelected: (value) {handleClick(value, index);},
+              itemBuilder: (BuildContext context){
+                return{'Delete', 'Change settings'}.map((String choice){
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            )
+          ],
         ),
-        //SizedBox(height: screenHeight*0.005),
-        Container(
-          width: screenHeight * 0.1,
-          height: screenHeight * 0.02,
-          margin: EdgeInsets.only(bottom: screenHeight*0.01),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 246, 243, 243),
-            borderRadius: BorderRadius.circular(20),
-           
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(3, (index) {
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: screenHeight*0.005),
-                width: screenHeight*0.01,
-                height: screenHeight*0.02,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _currentPage == index ? const Color.fromARGB(255, 57, 96, 1) : const Color.fromARGB(255, 169, 169, 169),
-                  
+        body: Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width*0.5,
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
+                  initialZoom: Field_utils.calculateZoomLevel(field.points, context),
                 ),
-              );
-            }),
+                children: [
+                  TileLayer(
+                    //isri imagery
+                    urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                    userAgentPackageName: 'dima',
+                  ),
+                  PolygonLayer(polygons: [
+                    Polygon(
+                      points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
+                      color: Colors.green.withOpacity(0.2),
+                      borderStrokeWidth: screenHeight*0.001,
+                      borderColor: Colors.black,
+                      isFilled: _mapType==MapOverlayType.normal ? true : false,
+                    ),
+                  ],),
+                  _mapUrls[_mapType] == null ? Container() :
+                  OverlayImageLayer(
+                    overlayImages: [
+                      OverlayImage(
+                        bounds: getPolygonBounds(field.points),
+                        opacity: 0.5,
+                        imageProvider: NetworkImage(_mapUrls[_mapType]!),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              onPageChanged: (int page) {
+                setState(() {
+                  _currentPage = page;
+                });
+              },
+              itemBuilder: (context, index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Center(
+                        child: _pages[index],
+                      ),
+                    ),
+                    Container(
+                              width: screenHeight * 0.1,
+                              height: screenHeight * 0.02,
+                              margin: EdgeInsets.only(bottom: screenHeight*0.01),
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 246, 243, 243),
+                                borderRadius: BorderRadius.circular(20),
+                              
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(3, (index) {
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(horizontal: screenHeight*0.005),
+                                    width: screenHeight*0.01,
+                                    height: screenHeight*0.02,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _currentPage == index ? const Color.fromARGB(255, 57, 96, 1) : const Color.fromARGB(255, 169, 169, 169),
+                                      
+                                    ),
+                                  );
+                        }),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-        ],
-      ) ,
-    );
+          //SizedBox(height: screenHeight*0.005),
+          ],
+        ) ,
+      );
+    }
   }
 
   Future<void> handleClick(String value, int index) async {
