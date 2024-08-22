@@ -177,13 +177,26 @@ final AuthService _auth = AuthService();
                         height: screenHeight*0.04,
                         child: ElevatedButton(
                           style: ThemeOptions.elevatedButtonStyle(context),
-                          onPressed: () {},
+                          onPressed: () {
+                            _signInWithGoogle();
+                          },
                           child: const Text('sign in with Google')),
                       )
                       ]),
                 ))),
           ),
         ));
+  }
+
+
+  void _signInWithGoogle() async {
+    UserCredential? user = await _auth.signWithGoogle();
+    if (user.user != null) {
+      print("User is successfully signed in with google");
+      Navigator.pushNamedAndRemoveUntil(context, "/homepage",(route) => false);
+    } else {
+      print("some error occured");
+    }
   }
 
   void _signUp() async {
