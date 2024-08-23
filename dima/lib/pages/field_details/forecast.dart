@@ -14,45 +14,93 @@ class ForecastWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    bool useMobileLayout = screenWidth < 600;
 
-    return Container(
-      margin: EdgeInsets.all(screenHeight * 0.005),
-      padding: EdgeInsets.all(screenHeight * 0.01),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 0), // changes position of shadow
-          ),
-        ],
+    if(useMobileLayout){
+      return Container(
+        margin: EdgeInsets.all(screenHeight * 0.005),
+        padding: EdgeInsets.all(screenHeight * 0.01),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 0), // changes position of shadow
+            ),
+          ],
 
-      ),
-      child: Column(
-        children: [
-          Text(date, style: TextStyle(fontSize: screenHeight *0.015)),
-          Row(
-            children: [
-              Column(
-                children: [
-                  Image(image:AssetImage('assets/images/${convertCodesToIcons(weatherCode)}.png'), width: screenWidth * 0.1 , height: screenHeight * 0.06),
-                  Text('$precipitation mm', style: TextStyle(fontSize: screenHeight *0.015)),
-                ],
-              ),
-              Column(
-                children: [
-                  Text('$minTemp °C', style: TextStyle(fontSize: screenHeight*0.02, color: Colors.blue)),
-                  Text('$maxTemp °C', style: TextStyle(fontSize: screenHeight *0.02, color: Colors.red)),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+        ),
+        child: Column(
+          children: [
+            Text(date, style: TextStyle(fontSize: screenHeight *0.015)),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Image(image:AssetImage('assets/images/${convertCodesToIcons(weatherCode)}.png'), width: screenWidth * 0.1 , height: screenHeight * 0.06),
+                    Text('$precipitation mm', style: TextStyle(fontSize: screenHeight *0.015)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text('$maxTemp °C', style: TextStyle(fontSize: screenHeight *0.02, color: Colors.red)),
+                    Text('$minTemp °C', style: TextStyle(fontSize: screenHeight*0.02, color: Colors.blue)),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+    else{
+
+      //TABLET LAYOUT
+
+
+      return Container(
+        margin: EdgeInsets.all(screenHeight * 0.005),
+        padding: EdgeInsets.all(screenHeight * 0.01),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Color.fromARGB(255, 237, 235, 235)),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 0), // changes position of shadow
+            ),
+          ],
+
+        ),
+        child: Column(
+          children: [
+            Text(date, style: TextStyle(fontSize: screenHeight *0.02)),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Image(image:AssetImage('assets/images/${convertCodesToIcons(weatherCode)}.png'), width: screenWidth * 0.08 , height: screenWidth * 0.08),
+                    Text('$precipitation mm', style: TextStyle(fontSize: screenHeight *0.022)),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text('$maxTemp °C', style: TextStyle(fontSize: screenHeight *0.025, color: Colors.red)),
+                    Text('$minTemp °C', style: TextStyle(fontSize: screenHeight*0.025, color: Colors.blue)),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

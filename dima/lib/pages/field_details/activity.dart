@@ -45,12 +45,13 @@ class _activityWidgetState extends State<ActivityWidget> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: FutureBuilder(
         future: getActivities(fieldIndex),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting || _isEditing) {
             // Show a loading indicator while waiting for the future to complete
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError ) {
             // Show an error message if the future encounters an error
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -58,6 +59,7 @@ class _activityWidgetState extends State<ActivityWidget> {
             List<Activity>? activities = snapshot.data;
             if (activities != null && activities.isNotEmpty) {
               return ListView.builder(
+                
                 itemCount: activities.length,
                 itemBuilder: (context, index){
                   Activity activity = activities[index];
@@ -68,21 +70,21 @@ class _activityWidgetState extends State<ActivityWidget> {
                       children: [
                         Text(activity.date.substring(0,10), style: TextStyle(fontSize: screenHeight*0.015, color: Colors.grey)),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   backgroundColor: const Color.fromARGB(255, 153, 194, 162),
-                                  title: Text('Delete activity'),
-                                  content: Text('Are you sure you want to delete this activity?'),
+                                  title: const Text('Delete activity'),
+                                  content: const Text('Are you sure you want to delete this activity?'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       }, 
-                                      child: Text('Cancel'),
+                                      child: const Text('Cancel'),
                                     ),
                                     TextButton(
                                       onPressed: () async {
@@ -91,12 +93,12 @@ class _activityWidgetState extends State<ActivityWidget> {
                                         Firestore().removeActivity(fieldIndex, index);
                                         Navigator.of(context).pop();
                                         _isEditing=true;
-                                        await Future.delayed(Duration(seconds: 1));
+                                        await Future.delayed(const Duration(seconds: 1));
                                         _isEditing=false;
                                         setState(() {});
                                         
                                       },
-                                      child: Text('Delete'),
+                                      child: const Text('Delete'),
                                     ),
                                   ],
                                 );
@@ -111,7 +113,7 @@ class _activityWidgetState extends State<ActivityWidget> {
               );
             }
               else {
-                return Center(child: Text('No activities found'));
+                return const Center(child: Text('No activities found'));
               }
           }
         }
@@ -125,18 +127,18 @@ class _activityWidgetState extends State<ActivityWidget> {
               alignment: Alignment.center ,
               child: SingleChildScrollView(
                 child: AlertDialog(
-                  title: Text('Add Activity'),
+                  title: const Text('Add Activity'),
                   content: Column(
                     children: [
                       TextField(
                         controller: nameController ,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Activity Name',
                         ),
                       ),
                       TextField(
                         controller: descriptionController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Activity Description',
                         ),
                       ),
@@ -145,7 +147,7 @@ class _activityWidgetState extends State<ActivityWidget> {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                     TextButton(
                       onPressed: () async {
@@ -155,11 +157,11 @@ class _activityWidgetState extends State<ActivityWidget> {
                         await Firestore().addActivity(newActivity.toMap(), fieldIndex);
                         Navigator.of(context).pop();
                         _isEditing=true;
-                        await Future.delayed(Duration(seconds: 1));
+                        await Future.delayed(const Duration(seconds: 1));
                         _isEditing=false;
                         setState(() {});
                       },
-                      child: Text('Add'),
+                      child: const Text('Add'),
                     ),
                   ],
                 ),
@@ -167,7 +169,7 @@ class _activityWidgetState extends State<ActivityWidget> {
             );
           }
         ) ,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       )
     );
 

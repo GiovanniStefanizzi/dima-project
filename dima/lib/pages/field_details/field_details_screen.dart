@@ -299,53 +299,64 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
               ),
             ),
             Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentPage = page;
-                });
-              },
-              itemBuilder: (context, index) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: Center(
-                        child: _pages[index],
-                      ),
-                    ),
-                    Container(
-                              width: screenHeight * 0.1,
-                              height: screenHeight * 0.02,
-                              margin: EdgeInsets.only(bottom: screenHeight*0.01),
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 246, 243, 243),
-                                borderRadius: BorderRadius.circular(20),
-                              
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: List.generate(3, (index) {
-                                  return Container(
-                                    margin: EdgeInsets.symmetric(horizontal: screenHeight*0.005),
-                                    width: screenHeight*0.01,
-                                    height: screenHeight*0.02,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _currentPage == index ? const Color.fromARGB(255, 57, 96, 1) : const Color.fromARGB(255, 169, 169, 169),
-                                      
-                                    ),
-                                  );
-                        }),
-                      ),
-                    ),
-                  ],
-                );
-              },
+            child: Column(
+              
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.86,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 3,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.86,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            child: Center(
+                              child: _pages[index],
+                            ),
+                          ),
+                          
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  width: screenHeight * 0.1,
+                  height: screenHeight * 0.02,
+                  //margin: EdgeInsets.only(bottom: screenHeight*0.01),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 246, 243, 243),
+                    borderRadius: BorderRadius.circular(20),
+                  
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(3, (index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: screenHeight*0.005),
+                        width: screenHeight*0.01,
+                        height: screenHeight*0.02,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentPage == index ? const Color.fromARGB(255, 57, 96, 1) : const Color.fromARGB(255, 169, 169, 169),
+                          
+                        ),
+                      );
+            }),
+          ),
+        ),
+              ],
+              
             ),
           ),
           //SizedBox(height: screenHeight*0.005),
