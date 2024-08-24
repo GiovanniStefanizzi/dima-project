@@ -50,6 +50,10 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     MapOverlayType.lai: '',
   };
   
+  final Map<MapOverlayType, Image> _mapImages = {
+    //loading image from assets
+    MapOverlayType.ndvi: Image.network(''),
+  };
   
   LatLngBounds getPolygonBounds(List<GeoPoint> points) {
     //connvert points to latlng
@@ -102,12 +106,25 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     final eviUrl = await getMap(field.points, MapOverlayType.evi);
     final saviUrl = await getMap(field.points, MapOverlayType.savi);
     final laiUrl = await getMap(field.points, MapOverlayType.lai);
+    Image ndviImage = Image.network(ndviUrl);
+    Image ndwiImage = Image.network(ndwiUrl);
+    Image eviImage = Image.network(eviUrl);
+    Image saviImage = Image.network(saviUrl);
+    Image laiImage = Image.network(laiUrl);
+
     setState(() {
       _mapUrls[MapOverlayType.ndvi] = ndviUrl;
       _mapUrls[MapOverlayType.ndwi] = ndwiUrl;
       _mapUrls[MapOverlayType.evi] = eviUrl;
       _mapUrls[MapOverlayType.savi] = saviUrl;
       _mapUrls[MapOverlayType.lai] = laiUrl;
+      
+      _mapImages[MapOverlayType.ndvi] = ndviImage;
+      _mapImages[MapOverlayType.ndwi] = ndwiImage;
+      _mapImages[MapOverlayType.evi] = eviImage;
+      _mapImages[MapOverlayType.savi] = saviImage;
+      _mapImages[MapOverlayType.lai] = laiImage;
+      
     });
     }
 
@@ -343,28 +360,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                       isFilled: _mapType==MapOverlayType.normal ? true : false,
                     ),
                   ],),
-                  _mapUrls[_mapType] == null ?  CircularProgressIndicator( strokeWidth: 2,) :
+                  _mapImages[_mapType] == null ?  Container() :
                   OverlayImageLayer(
                     overlayImages: [
                       OverlayImage(
                         bounds: getPolygonBounds(field.points),
                         opacity: 0.5,
-                        imageProvider: Image.network(
-                          _mapUrls[_mapType]!,
-                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
-                              );
-                            };
-                          }
-                        ) as ImageProvider,
+                        imageProvider: _mapImages[_mapType]!.image,
                       ),
                     ],
                   )
