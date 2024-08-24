@@ -72,7 +72,26 @@ class _MyWidgetState extends State<FieldListScreen> {
                   // Build each item of the ListView using the Field_model
                   Field_model field = fields[index];
                   return ListTile(
-                    leading: const Icon(Icons.map),
+                    leading:  FutureBuilder(
+                      future: Future.wait([NotificationService().frostAlert(field), NotificationService().hailAlert(field)]),
+                      builder: (context, AsyncSnapshot<List<bool>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Container(
+                            width: 15,
+                            height: 15,
+                            //child: CircularProgressIndicator( strokeWidth: 2,)
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          if (snapshot.data![0] || snapshot.data![1]) {
+                            return Icon(Icons.warning_rounded, color: Colors.red);
+                          } else {
+                            return Icon(Icons.map);
+                          }
+                        }
+                      },
+                    ),
                     title: Text(field.name),
                     subtitle: Text(field.cropType) ,
                     trailing: Row(

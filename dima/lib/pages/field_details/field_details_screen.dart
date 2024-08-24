@@ -98,16 +98,16 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
     final Field_model field = arguments['field'] as Field_model;
     final ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
-    // final _ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
-    // final _eviUrl = await getMap(field.points, MapOverlayType.evi);
-    // final _saviUrl = await getMap(field.points, MapOverlayType.savi);
-    // final _laiUrl = await getMap(field.points, MapOverlayType.lai);
+    final ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
+    final eviUrl = await getMap(field.points, MapOverlayType.evi);
+    final saviUrl = await getMap(field.points, MapOverlayType.savi);
+    final laiUrl = await getMap(field.points, MapOverlayType.lai);
     setState(() {
       _mapUrls[MapOverlayType.ndvi] = ndviUrl;
-      // this._ndwiUrl = _ndwiUrl;
-      // this._eviUrl = _eviUrl;
-      // this._saviUrl = _saviUrl;
-      // this._laiUrl = _laiUrl;
+      _mapUrls[MapOverlayType.ndwi] = ndwiUrl;
+      _mapUrls[MapOverlayType.evi] = eviUrl;
+      _mapUrls[MapOverlayType.savi] = saviUrl;
+      _mapUrls[MapOverlayType.lai] = laiUrl;
     });
     }
 
@@ -165,13 +165,28 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                       isFilled: _mapType==MapOverlayType.normal ? true : false,
                     ),
                   ],),
-                  _mapUrls[_mapType] == null ? Container() :
+                  _mapUrls[_mapType] == '' ?  CircularProgressIndicator( strokeWidth: 2,) :
                   OverlayImageLayer(
                     overlayImages: [
                       OverlayImage(
                         bounds: getPolygonBounds(field.points),
                         opacity: 0.5,
-                        imageProvider: NetworkImage(_mapUrls[_mapType]!),
+                        imageProvider: Image.network(
+                          _mapUrls[_mapType]!,
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            };
+                          }
+                        ) as ImageProvider,
                       ),
                     ],
                   )
@@ -189,7 +204,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                 });
               },
               itemBuilder: (context, index) {
-                return Container(
+                return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.5,
                   child: Center(
@@ -248,17 +263,59 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
           toolbarHeight: screenHeight*0.07,
           title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
           actions: [
-            PopupMenuButton <String>(
-              onSelected: (value) {handleClick(value, index);},
-              itemBuilder: (BuildContext context){
-                return{'Delete', 'Change settings'}.map((String choice){
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
+            //PopupMenuButton <String>(
+            //  onSelected: (value) {handleClick(value, index);},
+            //  itemBuilder: (BuildContext context){
+            //    return{'Delete', 'Change settings'}.map((String choice){
+            //      return PopupMenuItem<String>(
+            //        value: choice,
+            //        child: Text(choice),
+            //      );
+            //    }).toList();
+            //  },
+            //)
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () async {
+                Field_model fieldModel = await Firestore().getField(index);
+                Navigator.pushNamed(context, '/modify_field', arguments: {'index': index,'field': fieldModel});
               },
-            )
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Delete field'),
+                      content: Text('Are you sure you want to delete this field?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            //Fdelete field
+                            Firestore().removeField(index);
+                            await Future.delayed(Duration(seconds: 1));
+                            //todo caricatore
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => FieldListScreen()),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
         body: Row(
@@ -267,8 +324,9 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
               width: MediaQuery.of(context).size.width*0.5,
               child: FlutterMap(
                 options: MapOptions(
-                  initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
-                  initialZoom: Field_utils.calculateZoomLevel(field.points, context),
+                  //initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
+                  //initialZoom: Field_utils.calculateZoomLevelTablet(field.points, context),
+                  initialCameraFit: CameraFit.coordinates(coordinates: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(), padding: const EdgeInsets.all(50.0)),
                 ),
                 children: [
                   TileLayer(
@@ -280,18 +338,33 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                     Polygon(
                       points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
                       color: Colors.green.withOpacity(0.2),
-                      borderStrokeWidth: screenHeight*0.001,
+                      borderStrokeWidth: screenHeight*0.004,
                       borderColor: Colors.black,
                       isFilled: _mapType==MapOverlayType.normal ? true : false,
                     ),
                   ],),
-                  _mapUrls[_mapType] == null ? Container() :
+                  _mapUrls[_mapType] == null ?  CircularProgressIndicator( strokeWidth: 2,) :
                   OverlayImageLayer(
                     overlayImages: [
                       OverlayImage(
                         bounds: getPolygonBounds(field.points),
                         opacity: 0.5,
-                        imageProvider: NetworkImage(_mapUrls[_mapType]!),
+                        imageProvider: Image.network(
+                          _mapUrls[_mapType]!,
+                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            };
+                          }
+                        ) as ImageProvider,
                       ),
                     ],
                   )

@@ -74,4 +74,29 @@ class NotificationService {
     }
     
   }
+
+  Future<bool> hailAlert(Field_model field) async {
+    int? maxCode = await getMaxWeatherCode3days(Field_utils.getCentroid(field.points));
+                //
+    if(maxCode == 96 || maxCode == 99){
+        return true;
+    }
+    else{
+        return false;
+    }
+  }
+
+Future<bool> frostAlert(Field_model field) async {
+    double? minTemp = await getMinTemperature3days(Field_utils.getCentroid(field.points));
+    if(minTemp <= 0){
+        return true;
+    }
+    else{
+        return false;
+    }
+  }
+
+  
 }
+
+
