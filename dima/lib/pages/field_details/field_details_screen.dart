@@ -51,8 +51,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
   };
   
   final Map<MapOverlayType, Image> _mapImages = {
-    //loading image from assets
-    MapOverlayType.ndvi: Image.network(''),
+    
   };
   
   LatLngBounds getPolygonBounds(List<GeoPoint> points) {
@@ -112,6 +111,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     Image saviImage = Image.network(saviUrl);
     Image laiImage = Image.network(laiUrl);
 
+
+    precacheImage(ndviImage.image, context);
+    precacheImage(ndwiImage.image, context);
+    precacheImage(eviImage.image, context);
+    precacheImage(saviImage.image, context);
+    precacheImage(laiImage.image, context);
+
     setState(() {
       _mapUrls[MapOverlayType.ndvi] = ndviUrl;
       _mapUrls[MapOverlayType.ndwi] = ndwiUrl;
@@ -124,6 +130,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       _mapImages[MapOverlayType.evi] = eviImage;
       _mapImages[MapOverlayType.savi] = saviImage;
       _mapImages[MapOverlayType.lai] = laiImage;
+      
       
     });
     }
@@ -182,28 +189,13 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                       isFilled: _mapType==MapOverlayType.normal ? true : false,
                     ),
                   ],),
-                  _mapUrls[_mapType] == '' ?  CircularProgressIndicator( strokeWidth: 2,) :
+                  _mapImages[_mapType] == null ?  Container() :
                   OverlayImageLayer(
                     overlayImages: [
                       OverlayImage(
                         bounds: getPolygonBounds(field.points),
                         opacity: 0.5,
-                        imageProvider: Image.network(
-                          _mapUrls[_mapType]!,
-                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
-                            } else {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
-                              );
-                            };
-                          }
-                        ) as ImageProvider,
+                        imageProvider: _mapImages[_mapType]!.image,
                       ),
                     ],
                   )
