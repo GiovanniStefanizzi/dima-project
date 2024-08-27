@@ -25,7 +25,7 @@ void main() async {
   );
 
   FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
-  Size size = view.physicalSize;
+  Size size = view.physicalSize/view.devicePixelRatio;
   double width = size.width;
   double height = size.height;
   var shortestSide = width < height ? width : height;

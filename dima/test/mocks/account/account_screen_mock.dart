@@ -4,29 +4,28 @@ import 'package:dima/themes/theme_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../auth/firebase_auth/auth_util.dart';
 
 
-class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key});
+class AccountScreenMock extends StatefulWidget {
+  const AccountScreenMock({super.key});
 
   @override
-  State<AccountScreen> createState() => _accountScreenState();
+  State<AccountScreenMock> createState() => _accountScreenState();
 }
 
-class _accountScreenState extends State<AccountScreen> {
+class _accountScreenState extends State<AccountScreenMock> {
   bool _isEditing = false;
-  final AuthService _auth=AuthService();
+  //final AuthService _auth=AuthService();
 
-  Future<String> getUsername() async {
-    User_model? user = await Firestore().getCurrentUser();
-    return user!.username;
-  }
+  //Future<String> getUsername() async {
+  //  User_model? user = await Firestore().getCurrentUser();
+  //  return user!.username;
+  //}
 
-  Future<String> getEmail() async {
-    User_model? user = await Firestore().getCurrentUser();
-    return user!.email;
-  }
+  //Future<String> getEmail() async {
+  //  User_model? user = await Firestore().getCurrentUser();
+  //  return user!.email;
+  //}
 
   @override
   Widget build(BuildContext context) {
@@ -50,24 +49,12 @@ class _accountScreenState extends State<AccountScreen> {
                 //put size equal to 10% of the screen height 
                 size: 0.15 * MediaQuery.of(context).size.height),
               SizedBox(height: screenHeight * 0.03),
-              FutureBuilder(future: getUsername(), builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting || _isEditing) {
-                  return CircularProgressIndicator();
-                } else {
-                  return Text(snapshot.data.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth*0.07),);
-                }
-              }),
+              Text('carlo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth*0.07)),
               SizedBox(height: screenHeight * 0.01),
-              FutureBuilder(future: getEmail(), builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else {
-                  return Text(snapshot.data.toString());
-                }
-              }),
+              Text('carli'),
               SizedBox(height: screenHeight * 0.03),
               ElevatedButton(
-                
+                key: const Key('change_username_button'),
                 style: ThemeOptions.elevatedButtonStyle(context),
                 onPressed: () {
                   //alert with text field to change username
@@ -111,7 +98,7 @@ class _accountScreenState extends State<AccountScreen> {
               ),
               TextButton(
                 onPressed: () async{
-                  await _auth.logOut();
+                  //await _auth.logOut();
                   Navigator.pushNamed(context, '/login');
                 },
                 child: const Text('Sign out'),
@@ -121,7 +108,7 @@ class _accountScreenState extends State<AccountScreen> {
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () async {
-                  await AuthService().deleteUser();
+                  //await AuthService().deleteUser();
                   Navigator.pushNamed(context, '/login');
                 },
                 child: const Text('Delete account'),
@@ -148,24 +135,11 @@ class _accountScreenState extends State<AccountScreen> {
                 //put size equal to 10% of the screen height 
                 size: 0.15 * MediaQuery.of(context).size.height),
               SizedBox(height: screenHeight * 0.02),
-              FutureBuilder(future: getUsername(), builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting || _isEditing) {
-                  return CircularProgressIndicator();
-                } else {
-                  return Text(snapshot.data.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth*0.025),);
-                }
-              }),
+              Text('carlo'),
               //SizedBox(height: screenHeight * 0.01),
-              FutureBuilder(future: getEmail(), builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else {
-                  return Text(snapshot.data.toString(), style: TextStyle(fontSize: screenWidth*0.015),);
-                }
-              }),
+              Text('carli'),
               SizedBox(height: screenHeight * 0.05),
               ElevatedButton(
-                key: Key('change_username_button'),
                 style: ThemeOptions.elevatedButtonStyleTablet(context),
                 onPressed: () {
                   //alert with text field to change username
@@ -209,7 +183,7 @@ class _accountScreenState extends State<AccountScreen> {
               ),
               TextButton(
                 onPressed: () async{
-                  await _auth.logOut();
+                  //await _auth.logOut();
                   Navigator.pushNamed(context, '/login');
                 },
                 child: const Text('Sign out'),
@@ -219,7 +193,7 @@ class _accountScreenState extends State<AccountScreen> {
                   foregroundColor: MaterialStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () async {
-                  await AuthService().deleteUser();
+                  //wait AuthService().deleteUser();
                   Navigator.pushNamed(context, '/login');
                 },
                 child: const Text('Delete account'),

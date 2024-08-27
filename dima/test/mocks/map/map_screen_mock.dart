@@ -17,16 +17,19 @@ import 'package:dima/firestore/firestore.dart';
 //import 'package:latlong2/latlong.dart';
 //import 'package:uuid/uuid.dart';
 import 'package:http/http.dart'as http;
+
 import 'package:location/location.dart';
 
 
-class MapScreen extends StatefulWidget{
+class MapScreenMock extends StatefulWidget{
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  State<MapScreenMock> createState() => _MapScreenState();
+
+  
 }
 
-class _MapScreenState extends State<MapScreen>{
+class _MapScreenState extends State<MapScreenMock>{
 
   final Completer<GoogleMapController> _controller = Completer();
   TextEditingController _searchController = TextEditingController();
@@ -70,45 +73,20 @@ class _MapScreenState extends State<MapScreen>{
     });
   }
 
-  // _onChanged() {
-  //   if (_sessionToken == null) {
-  //     setState(() {
-  //       _sessionToken = Uuid().v4();
-  //     });
-  //   }
-  //   getSuggestion(_searchController.text);
-  // }
-
-  // void getSuggestion(String input) async {
-  //   String kPLACES_API_KEY = "AIzaSyBgyp5fhb7cpVEWS2cESCVMcRG0d5PwhR4";
-  //   String type = '(regions)';
-  //   String baseURL =
-  //       'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-  //   String request =
-  //       '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
-  //   var response = await http.get(Uri.parse(request));
-  //   if (response.statusCode == 200) {
-  //     setState(() {
-  //       _placeList = json.decode(response.body)['predictions'];
-  //     });
-  //   } else {
-  //     throw Exception('Failed to load predictions');
-  //   }
-  // }
-
-  void _setMarker(LatLng point){
+  
+  
+  @visibleForTesting
+   void _setMarker(LatLng point){
     setState(() {
       _markers.add(
         Marker(
           markerId:const MarkerId('marker'), 
           position: point,
-          //bitmap from png,
-          
           )
       );
     });
   }
-
+  
   void _setPolygon(){
     final String polygonIdVal = 'polygon_$_polygonIdCounter';
     _polygonIdCounter++;
@@ -227,7 +205,11 @@ Future<void> _createField() async {
   }
 
   
-
+  @visibleForTesting
+  LatLng setMarkerAndReturn(){
+    _setMarker(LatLng(1, 1));
+    return LatLng(1, 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -255,44 +237,14 @@ Future<void> _createField() async {
                       
                       currentLatLng == null ? Stack(
                         children: [
-                          GoogleMap(
-                            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),].toSet(),
-                            initialCameraPosition: _initialPosition,
-                            onMapCreated: (GoogleMapController controller)
-                            {
-                              _controller.complete(controller);
-                            },
-                            mapType: MapType.hybrid,
-                            markers: _markers,
-                            polygons: _polygons,
-                            onTap: (point){ 
-                              _addPoint(point);
-                            },
-                          ),
+                          Placeholder(),
                           Center(
                             
                             child: const CircularProgressIndicator(),
                           )
                         ],
                       ) :
-                      GoogleMap(
-                        gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-                                                new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
-                                              ].toSet(),
-
-                      initialCameraPosition: CameraPosition(target:  currentLatLng!, zoom: 15),
-                      
-                      onMapCreated: (GoogleMapController controller)
-                      {
-                        _controller.complete(controller);
-                      },
-                      mapType: MapType.hybrid,
-                      markers: _markers,
-                      polygons: _polygons,
-                      onTap: (point){ 
-                        _addPoint(point);
-                      },
-                      ),
+                      Placeholder(),
                       Positioned(
                         bottom: 30,
                         left: 15,
@@ -417,10 +369,7 @@ Future<void> _createField() async {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          width: screenWidth*0.4,
-                          child: const Text("Enable frost notification")
-                          ),
+                        //const Text("Enable frost notification"),
                         Switch(
                           value: _frostController,
                           inactiveTrackColor: Colors.grey,
@@ -438,10 +387,7 @@ Future<void> _createField() async {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                       children: [
-                      SizedBox(
-                        width: screenWidth*0.4,
-                        child: const Text("Enable hail notification")
-                        ),
+                      //const Text("Enable hail notification"),
                       Switch(
                         value: _hailController,
                         inactiveTrackColor: Colors.grey,
@@ -459,7 +405,11 @@ Future<void> _createField() async {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
+                      key: Key('saveButton'),
                       onPressed:(){
+                        _addPoint(LatLng(45.478, 9.230));
+                        _addPoint(LatLng(45.475, 9.230));
+                        _addPoint(LatLng(45.478, 9.235));
                         if (_isNotSimplePolygon(_polygonLatLongs)){
                           print("errorone");
                         }
@@ -468,13 +418,13 @@ Future<void> _createField() async {
 
                           sleep(const Duration(seconds: 1));
                           //todo caricatore
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => const Homepage()),
-                            (Route<dynamic> route) => false,
-                          );
+                          //Navigator.of(context).pushAndRemoveUntil(
+                          //  MaterialPageRoute(builder: (context) => const Homepage()),
+                          //  (Route<dynamic> route) => false,
+                          //);
                         }
                       },
-                      child: const Icon(Icons.save, color: Color.fromARGB(255, 153, 194, 162),),
+                      child:  Text(key: Key('ButtonText') ,_isNotSimplePolygon(_polygonLatLongs) ? "Error" : "Save"),
                     )
                   ],
                   ),
@@ -678,7 +628,10 @@ Future<void> _createField() async {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text("Enable frost notification"),
+                          SizedBox(
+                            width: screenWidth*0.4,
+                            child: const Text("Enable frost notification")
+                          ),
                           Switch(
                             value: _frostController,
                             inactiveTrackColor: Colors.grey,
@@ -696,7 +649,10 @@ Future<void> _createField() async {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                         children: [
-                        const Text("Enable hail notification"),
+                        SizedBox(
+                          width: screenWidth*0.4,
+                          child: const Text("Enable hail notification")
+                        ),
                         Switch(
                           value: _hailController,
                           inactiveTrackColor: Colors.grey,
