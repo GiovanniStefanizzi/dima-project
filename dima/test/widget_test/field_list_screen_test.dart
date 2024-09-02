@@ -37,4 +37,39 @@ void main(){
      final image = tester.widget<Image>(imageWidget);
      expect(image.image, AssetImage('assets/images/2.png'));
   });
+
+
+  //TABLET
+
+
+    testWidgets('field list button test tablet', (WidgetTester tester) async {
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(1600, 2560);
+
+
+    await tester.pumpWidget(const MaterialApp(home: FieldListScreenMock()));
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.byType(ListTile), findsOneWidget);
+    
+
+  });
+  testWidgets('field list listTile test tablet', (WidgetTester tester) async {
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(1600, 2560);
+
+
+    await tester.pumpWidget(const MaterialApp(home: FieldListScreenMock()));
+    //get text with key temperature and check if it is 10°
+    var widget = find.byKey(Key('temperature'));
+
+    final textWidget = tester.widget<Text>(widget);
+    final textValue = textWidget.data;
+
+    // Verifica che il testo sia uguale a "10°C"
+    expect(textValue, equals('10°C'));
+     
+     var imageWidget = find.byKey(Key('image'));
+     final image = tester.widget<Image>(imageWidget);
+     expect(image.image, AssetImage('assets/images/2.png'));
+  });
 }

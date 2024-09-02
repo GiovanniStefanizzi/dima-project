@@ -13,6 +13,8 @@ import '../mocks/register/register_screen_mock.dart';
  void main() {
    //test on login screen mock
   testWidgets('Login screen test', (WidgetTester tester) async {
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(240, 432);
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(home: LoginMock()));
 
@@ -23,7 +25,20 @@ import '../mocks/register/register_screen_mock.dart';
     expect(find.text('prova'), findsOneWidget);
     //presso on signupbutton and test if it works
     await tester.tap(find.byKey(Key('signupbutton')));
+  });
 
-    
+  testWidgets('Login screen test tablet', (WidgetTester tester) async {
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(1600, 2560);
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(home: LoginMock()));
+
+    // Verify that the signup screen is displayed
+    expect(find.byType(TextButton), findsOneWidget);
+    //try to write in the email field and check if correctly written
+    await tester.enterText(find.byKey(Key('emailfield')),'prova');
+    expect(find.text('prova'), findsOneWidget);
+    //presso on signupbutton and test if it works
+    await tester.tap(find.byKey(Key('signupbutton')));
   });
  }

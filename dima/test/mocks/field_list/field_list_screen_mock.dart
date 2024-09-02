@@ -10,6 +10,8 @@ import 'package:dima/utils/background_utils.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../field_details/field_details_screen_mock.dart';
+
 class FieldListScreenMock extends StatefulWidget {
   const FieldListScreenMock({super.key});
 
@@ -78,12 +80,7 @@ class _MyWidgetState extends State<FieldListScreenMock> {
                       ),
                       onTap: () {
                         // Navigate to the FieldDetailsScreen
-                        Navigator.pushNamed(
-                          context, '/field_details',
-                          arguments:{
-                          'field': field,
-                          'index': index}
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FieldDetailsScreenMock()));
                       },
                     ),
                   );

@@ -1,19 +1,21 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima/firestore/firestore.dart';
 import 'package:dima/models/field_model.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/pages/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class ModifyFieldScreen extends StatefulWidget {
-  const ModifyFieldScreen({super.key});
+class ModifyFieldScreenMock extends StatefulWidget {
+  const ModifyFieldScreenMock({super.key});
 
   @override
-  State<ModifyFieldScreen> createState() => _ModifyFieldScreenState();
+  State<ModifyFieldScreenMock> createState() => _ModifyFieldScreenState();
 }
 
-class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
+class _ModifyFieldScreenState extends State<ModifyFieldScreenMock> {
   
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _fieldNameController = TextEditingController();
@@ -40,9 +42,10 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
-    final index = arguments['index'] as int;
-    final field = arguments['field'] as Field_model;
+    //final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
+    final index = 1;
+    List<GeoPoint> geoPoints = [GeoPoint(45.478, 9.230), GeoPoint(45.475, 9.230), GeoPoint(45.478, 9.235)];
+    Field_model field = Field_model(name: 'name', cropType: 'cropType', datePlanted: '2024-08-14', hailAlert: false, frostAlert: false, points: geoPoints, activities: []);
 
     final screenHeight = MediaQuery.of(context).size.height;  
     final screenWidth = MediaQuery.of(context).size.width;
@@ -60,12 +63,13 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
 
     if(useMobileLayout){
       return Scaffold(
+        key: Key('modifyFieldScreen'),
         body:SingleChildScrollView(
           child: Column(
             children: [
               AppBar(
                 toolbarHeight: screenHeight*0.07,
-                title: const Text('Modify field')
+                title: const Text('Map')
               ),
               Container(
                       height: 600,
@@ -82,6 +86,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                           const SizedBox(height: 5),
                           Form(child:
                             TextField(
+                              key: Key('fieldName'),
                               controller: _fieldNameController,
                               decoration: InputDecoration(
                                 hintText: 'Field name',
@@ -140,6 +145,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                         const SizedBox(height: 5),
                           Form(child:
                             TextField(
+                              key: Key('date'),
                               controller: _dateController,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.calendar_month, color: Color.fromARGB(255, 153, 194, 162)),
@@ -164,29 +170,31 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                             ),
                           ), 
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text("Enable frost notification"),
-                              Switch(
-                                value: _frostController,
-                                inactiveTrackColor: Colors.grey,
-                                inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
-                                activeTrackColor: Color.fromARGB(255, 153, 194, 162),
-                                activeColor: const Color.fromARGB(255, 77, 115, 78),
-                                onChanged: (bool value){
-                                  setState(() {
-                                    _frostModified = true;
-                                    _frostController = value;
-                                  });
-                                }),
-                                
-                          ],),
+                          SingleChildScrollView(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Enable frost notification", style: TextStyle(fontSize: 0.00001),),
+                                Switch(
+                                  value: _frostController,
+                                  inactiveTrackColor: Colors.grey,
+                                  inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
+                                  activeTrackColor: Color.fromARGB(255, 153, 194, 162),
+                                  activeColor: const Color.fromARGB(255, 77, 115, 78),
+                                  onChanged: (bool value){
+                                    setState(() {
+                                      _frostModified = true;
+                                      _frostController = value;
+                                    });
+                                  }),
+                                  
+                            ],),
+                          ),
                           const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                             children: [
-                            const Text("Enable hail notification"),
+                            const Text("Enable hail notification", style: TextStyle(fontSize: 0.00001),),
                             Switch(
                               value: _hailController,
                               inactiveTrackColor: Colors.grey,
@@ -213,7 +221,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                               bool hailAlert = _hailController;
                               bool frostAlert = _frostController;
               
-                              await Firestore().updateField(index, name, cropType, datePlanted, frostAlert, hailAlert);
+                              //await Firestore().updateField(index, name, cropType, datePlanted, frostAlert, hailAlert);
               
                               sleep(const Duration(seconds: 1));
                               //todo caricatore
@@ -244,7 +252,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
             children: [
               AppBar(
                 toolbarHeight: screenHeight*0.07,
-                title: const Text('Modify field')
+                title: const Text('Map')
               ),
               Container(
                       height: 600,
@@ -319,6 +327,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                         const SizedBox(height: 5),
                           Form(child:
                             TextField(
+                              key: Key('date'),
                               controller: _dateController,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(Icons.calendar_month, color: Color.fromARGB(255, 153, 194, 162)),
@@ -392,7 +401,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                               bool hailAlert = _hailController;
                               bool frostAlert = _frostController;
               
-                              await Firestore().updateField(index, name, cropType, datePlanted, frostAlert, hailAlert);
+                              //await Firestore().updateField(index, name, cropType, datePlanted, frostAlert, hailAlert);
               
                               sleep(const Duration(seconds: 1));
                               //todo caricatore

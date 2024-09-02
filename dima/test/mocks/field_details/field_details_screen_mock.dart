@@ -21,15 +21,21 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:dima/pages/field_details/meteo_details.dart';
 
+import '../account/account_screen_mock.dart';
+import '../field_list/field_list_screen_mock.dart';
+import 'activity_mock.dart';
+import 'meteo_details_mock.dart';
+import 'modify_screen_mock.dart';
 
-class FieldDetailsScreen extends StatefulWidget {
-  const FieldDetailsScreen({super.key});
+
+class FieldDetailsScreenMock extends StatefulWidget {
+  const FieldDetailsScreenMock({super.key});
 
   @override
-  State<FieldDetailsScreen> createState() => _FieldDetailsScreenState();
+  State<FieldDetailsScreenMock> createState() => _FieldDetailsScreenState();
 }
 
-class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
+class _FieldDetailsScreenState extends State<FieldDetailsScreenMock> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
   MapOverlayType _mapType = MapOverlayType.normal;
@@ -91,25 +97,27 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
       fetchMapUrls();
     });
     _pages = [
-    const MeteoDetailsWidget(),
-    ActivityWidget(),
+    const MeteoDetailsWidgetMock(key: Key('meteo details'),),
+    ActivityWidgetMock(),
     MapsOverlayPage(updateParentData: updateDataFromChild, startingType: _mapType),
   ];
   }
 
   Future<void> fetchMapUrls() async {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
-    final Field_model field = arguments['field'] as Field_model;
-    final ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
-    final ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
-    final eviUrl = await getMap(field.points, MapOverlayType.evi);
-    final saviUrl = await getMap(field.points, MapOverlayType.savi);
-    final laiUrl = await getMap(field.points, MapOverlayType.lai);
-    Image ndviImage = Image.network(ndviUrl);
-    Image ndwiImage = Image.network(ndwiUrl);
-    Image eviImage = Image.network(eviUrl);
-    Image saviImage = Image.network(saviUrl);
-    Image laiImage = Image.network(laiUrl);
+    //final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
+    List<GeoPoint> geoPoints = [GeoPoint(45.478, 9.230), GeoPoint(45.475, 9.230), GeoPoint(45.478, 9.235)];
+    Field_model field = Field_model(name: 'name', cropType: 'cropType', datePlanted: '2024-08-14', hailAlert: false, frostAlert: false, points: geoPoints, activities: []);
+
+    //final ndviUrl = await getMap(field.points, MapOverlayType.ndvi);
+    //final ndwiUrl = await getMap(field.points, MapOverlayType.ndwi);
+    //final eviUrl = await getMap(field.points, MapOverlayType.evi);
+    //final saviUrl = await getMap(field.points, MapOverlayType.savi);
+    //final laiUrl = await getMap(field.points, MapOverlayType.lai);
+    Image ndviImage = Image.asset('assets/images/1.png');
+    Image ndwiImage = Image.asset('assets/images/1.png');
+    Image eviImage = Image.asset('assets/images/1.png');
+    Image saviImage = Image.asset('assets/images/1.png');
+    Image laiImage = Image.asset('assets/images/1.png');
 
 
     precacheImage(ndviImage.image, context);
@@ -119,11 +127,6 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     precacheImage(laiImage.image, context);
 
     setState(() {
-      _mapUrls[MapOverlayType.ndvi] = ndviUrl;
-      _mapUrls[MapOverlayType.ndwi] = ndwiUrl;
-      _mapUrls[MapOverlayType.evi] = eviUrl;
-      _mapUrls[MapOverlayType.savi] = saviUrl;
-      _mapUrls[MapOverlayType.lai] = laiUrl;
       
       _mapImages[MapOverlayType.ndvi] = ndviImage;
       _mapImages[MapOverlayType.ndwi] = ndwiImage;
@@ -137,9 +140,11 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
-    final Field_model field = arguments['field'] as Field_model;
-    final int index = arguments['index'] as int;
+    //final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, Object>{}) as Map;
+    List<GeoPoint> geoPoints = [GeoPoint(45.478, 9.230), GeoPoint(45.475, 9.230), GeoPoint(45.478, 9.235)];
+    Field_model field = Field_model(name: 'name', cropType: 'cropType', datePlanted: '2024-08-14', hailAlert: false, frostAlert: false, points: geoPoints, activities: []);
+
+    final int index = 1;
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -150,7 +155,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           toolbarHeight: screenHeight*0.07,
-          title: Text(field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
+          title: Text(key: Key('nameOfField'),field.name, style: TextStyle(fontSize: screenHeight * 0.035),),
           actions: [
             //PopupMenuButton <String>(
             //  onSelected: (value) {handleClick(value, index);},
@@ -164,13 +169,16 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
             //  },
             //)
             IconButton(
+              key: Key('modifyButton'),
               icon: const Icon(Icons.edit),
               onPressed: () async {
-                Field_model fieldModel = await Firestore().getField(index);
-                Navigator.pushNamed(context, '/modify_field', arguments: {'index': index,'field': fieldModel});
+                //Field_model fieldModel = await Firestore().getField(index);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ModifyFieldScreenMock()));
+                
               },
             ),
             IconButton(
+              key: Key('deleteButton'),
               icon: Icon(Icons.delete),
               onPressed: () {
                 showDialog(
@@ -181,21 +189,20 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                       content: Text('Are you sure you want to delete this field?'),
                       actions: [
                         TextButton(
+                          key: Key('cancel'),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                           child: Text('Cancel'),
                         ),
                         TextButton(
+                          key: Key('delete'),
                           onPressed: () async {
                             //Fdelete field
-                            Firestore().removeField(index);
-                            await Future.delayed(Duration(seconds: 1));
+                            //Firestore().removeField(index);
+                            //await Future.delayed(Duration(seconds: 1));
                             //todo caricatore
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => FieldListScreen()),
-                              (Route<dynamic> route) => false,
-                            );
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => FieldListScreenMock()));
                           },
                           child: Text('Delete'),
                         ),
@@ -211,41 +218,11 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
           children: [
             Container(
               height: MediaQuery.of(context).size.height*0.5,
-              child: FlutterMap(
-                options: MapOptions(
-                  initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
-                  initialZoom: Field_utils.calculateZoomLevel(field.points, context),
-                ),
-                children: [
-                  TileLayer(
-                    //isri imagery
-                    urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-                    userAgentPackageName: 'dima',
-                  ),
-                  PolygonLayer(polygons: [
-                    Polygon(
-                      points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                      color: Colors.green.withOpacity(0.2),
-                      borderStrokeWidth: screenHeight*0.001,
-                      borderColor: Colors.black,
-                      isFilled: _mapType==MapOverlayType.normal ? true : false,
-                    ),
-                  ],),
-                  _mapImages[_mapType] == null ?  Container() :
-                  OverlayImageLayer(
-                    overlayImages: [
-                      OverlayImage(
-                        bounds: getPolygonBounds(field.points),
-                        opacity: 0.5,
-                        imageProvider: _mapImages[_mapType]!.image,
-                      ),
-                    ],
-                  )
-                ],
-              ),
+              child: Placeholder(),
             ),
             Expanded(
             child: PageView.builder(
+              key: Key('pageView'),
               controller: _pageController,
               scrollDirection: Axis.horizontal,
               itemCount: 3,
@@ -326,13 +303,15 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
             //  },
             //)
             IconButton(
+              key: Key('modifyButton'),
               icon: const Icon(Icons.edit),
               onPressed: () async {
-                Field_model fieldModel = await Firestore().getField(index);
-                Navigator.pushNamed(context, '/modify_field', arguments: {'index': index,'field': fieldModel});
+                //Field_model fieldModel = await Firestore().getField(index);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ModifyFieldScreenMock()));
               },
             ),
             IconButton(
+              key: Key('deleteButton'),
               icon: Icon(Icons.delete),
               onPressed: () {
                 showDialog(
@@ -351,7 +330,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                         TextButton(
                           onPressed: () async {
                             //Fdelete field
-                            Firestore().removeField(index);
+                            //Firestore().removeField(index);
                             await Future.delayed(Duration(seconds: 1));
                             //todo caricatore
                             Navigator.of(context).pushAndRemoveUntil(
@@ -373,39 +352,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
           children: [
             Container(
               width: MediaQuery.of(context).size.width*0.5,
-              child: FlutterMap(
-                options: MapOptions(
-                  //initialCenter: LatLng(Field_utils.getCentroid(field.points).latitude, Field_utils.getCentroid(field.points).longitude),
-                  //initialZoom: Field_utils.calculateZoomLevelTablet(field.points, context),
-                  initialCameraFit: CameraFit.coordinates(coordinates: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(), padding: const EdgeInsets.all(50.0)),
-                ),
-                children: [
-                  TileLayer(
-                    //isri imagery
-                    urlTemplate: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-                    userAgentPackageName: 'dima',
-                  ),
-                  PolygonLayer(polygons: [
-                    Polygon(
-                      points: field.points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
-                      color: Colors.green.withOpacity(0.2),
-                      borderStrokeWidth: screenHeight*0.004,
-                      borderColor: Colors.black,
-                      isFilled: _mapType==MapOverlayType.normal ? true : false,
-                    ),
-                  ],),
-                  _mapImages[_mapType] == null ?  Container() :
-                  OverlayImageLayer(
-                    overlayImages: [
-                      OverlayImage(
-                        bounds: getPolygonBounds(field.points),
-                        opacity: 0.5,
-                        imageProvider: _mapImages[_mapType]!.image,
-                      ),
-                    ],
-                  )
-                ],
-              ),
+              child: Placeholder(),
             ),
             Expanded(
             child: Column(
@@ -414,6 +361,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.86,
                   child: PageView.builder(
+                    key: Key('pageView'),
                     controller: _pageController,
                     scrollDirection: Axis.horizontal,
                     itemCount: 3,

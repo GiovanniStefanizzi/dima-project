@@ -68,6 +68,7 @@ class _LoginStateMock extends State<LoginMock> {
                         height: screenHeight*0.045,
                         width: screenWidth*0.5,
                         child: TextFormField(
+                          key: new Key('emailfield') ,  
                           style: TextStyle(
                             fontSize: screenWidth*0.045,
                           ),                    

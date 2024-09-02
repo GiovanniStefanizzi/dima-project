@@ -4,6 +4,8 @@ import 'package:dima/themes/theme_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../login/login_screen_mock.dart';
+
 
 
 class AccountScreenMock extends StatefulWidget {
@@ -54,7 +56,7 @@ class _accountScreenState extends State<AccountScreenMock> {
               Text('carli'),
               SizedBox(height: screenHeight * 0.03),
               ElevatedButton(
-                key: const Key('change_username_button'),
+                key: const Key('changeUsernameButton'),
                 style: ThemeOptions.elevatedButtonStyle(context),
                 onPressed: () {
                   //alert with text field to change username
@@ -97,9 +99,10 @@ class _accountScreenState extends State<AccountScreenMock> {
                 child: const Text('Change username'),
               ),
               TextButton(
+                key: Key('logoutButton'),
                 onPressed: () async{
                   //await _auth.logOut();
-                  Navigator.pushNamed(context, '/login');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginMock()));
                 },
                 child: const Text('Sign out'),
               ),

@@ -4,6 +4,8 @@ import 'package:dima/auth/firebase_auth/auth_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../homepage/homepage_mock.dart';
+
 
 class RegisterMock extends StatefulWidget {
 
@@ -60,7 +62,7 @@ class _RegisterMockState extends State<RegisterMock> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
+                        Text(key: Key('register'), "Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
                         SizedBox(
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
@@ -68,7 +70,7 @@ class _RegisterMockState extends State<RegisterMock> {
                             style: TextStyle(
                               fontSize: screenWidth*0.045,
                             ),  
-                            key: Key('emailfield'), 
+                            key: Key('email'), 
                             controller: _emailController,
                             decoration: ThemeOptions.inputDecoration('email', 'email', context),
                           ),
@@ -77,6 +79,7 @@ class _RegisterMockState extends State<RegisterMock> {
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
                           child: TextFormField(
+                            key: Key('username'),
                             style: TextStyle(
                               fontSize: screenWidth*0.045,
                             ),   
@@ -94,7 +97,8 @@ class _RegisterMockState extends State<RegisterMock> {
                         SizedBox(
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
-                          child: TextFormField(  
+                          child: TextFormField( 
+                            key: Key('password'),
                             style: TextStyle(
                               fontSize: screenWidth*0.045,
                             ),                   
@@ -104,15 +108,15 @@ class _RegisterMockState extends State<RegisterMock> {
                             
                             validator: (val){
                               if(val!.length < 8){
-                                return "password must be at least 8 characters long";
-                                //Fluttertoast.showToast(
-                                //  msg: "password must be at least 8 characters long",
-                                //  toastLength: Toast.LENGTH_SHORT,
-                                //  gravity: ToastGravity.BOTTOM,
-                                //  timeInSecForIosWeb: 1,
-                                //  textColor: Colors.red,
-                                //  fontSize: 16.0
-                                //);
+                                //return "password must be at least 8 characters long";
+                                Fluttertoast.showToast(
+                                  msg: "password must be at least 8 characters long",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  timeInSecForIosWeb: 1,
+                                  textColor: Colors.red,
+                                  fontSize: 16.0
+                                );
                               }
                               return null;
                             },
@@ -125,6 +129,7 @@ class _RegisterMockState extends State<RegisterMock> {
                               height: screenHeight*0.045,
                               width: screenWidth*0.5,
                               child: TextFormField(
+                                key: Key('repeatPassword'),
                                 style: TextStyle(
                                   fontSize: screenWidth*0.045,
                                 ),    
@@ -169,9 +174,10 @@ class _RegisterMockState extends State<RegisterMock> {
                           width: screenWidth*0.5,
                           height: screenHeight*0.04,
                           child: ElevatedButton(
+                            key: Key('registerbutton'),
                             style: ThemeOptions.elevatedButtonStyle(context),
                             onPressed: () async {
-                              //_signUp();
+                              _signUpMock();
                             },
                             child: const Text('sign up')),
                         ),
@@ -192,7 +198,12 @@ class _RegisterMockState extends State<RegisterMock> {
         );
       }
     else{
+
+
       //TABLET LAYOUT
+
+
+      
       return Scaffold(
           //resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
@@ -227,7 +238,7 @@ class _RegisterMockState extends State<RegisterMock> {
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
                           child: TextFormField(
-                            
+                            key: Key('email'),
                             style: TextStyle(
                               fontSize: screenWidth*0.015,
                             ),   
@@ -357,6 +368,33 @@ class _RegisterMockState extends State<RegisterMock> {
             ),
           )
         );
+    }
+  }
+  
+  void _signUpMock() {
+    if(_passwordController.text.length < 8){
+      Fluttertoast.showToast(
+        msg: "password must be at least 8 characters long",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.red,
+        fontSize: 16.0
+      );
+    }
+    else if(_passwordController.text != _repeatPasswordController.text){
+      Fluttertoast.showToast(
+        msg: "passwords do not match",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+    }
+    else{
+      //push to homepage
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomepageMock()));
     }
   }
 

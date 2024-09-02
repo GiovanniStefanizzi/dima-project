@@ -3,14 +3,17 @@ import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+import '../account/account_screen_mock.dart';
+import '../field_list/field_list_screen_mock.dart';
+
+class HomepageMock extends StatefulWidget {
+  const HomepageMock({super.key});
 
   @override
-  State<Homepage> createState() => _HomepageState();
+  State<HomepageMock> createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _HomepageState extends State<HomepageMock> {
   int _selectedIndex = 0;
 
   @override
@@ -39,8 +42,8 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
       body: <Widget>[
-        const FieldListScreen(),
-        const AccountScreen(),
+        const FieldListScreenMock(),
+        const AccountScreenMock(),
       ].elementAt(_selectedIndex),
     );
   }

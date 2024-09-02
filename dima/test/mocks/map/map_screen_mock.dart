@@ -20,6 +20,8 @@ import 'package:http/http.dart'as http;
 
 import 'package:location/location.dart';
 
+import '../homepage/homepage_mock.dart';
+
 
 class MapScreenMock extends StatefulWidget{
 
@@ -193,7 +195,6 @@ Future<void> _createField() async {
     bool frostAlert = _frostController;
     List<GeoPoint> points = _convertToGeoPoint(_polygonLatLongs);
     Field_model field=Field_model(name: name , cropType: cropType, datePlanted: datePlanted, hailAlert: hailAlert, frostAlert: frostAlert, points: points, activities: []);
-    await Firestore().writeField(field.toMap());
   }
 
   List<GeoPoint> _convertToGeoPoint(List<LatLng> points){
@@ -284,6 +285,7 @@ Future<void> _createField() async {
                     const SizedBox(height: 5),
                     Form(child:
                       TextField(
+                        key: Key('fieldName'),
                         controller: _fieldNameController,
                         decoration: InputDecoration(
                           hintText: 'Field name',
@@ -313,6 +315,7 @@ Future<void> _createField() async {
                   const SizedBox(height: 5),
                     Form(child:
                       TextField(
+                        key: Key('cropType'),
                         controller: _cropTypeController,
                         decoration: InputDecoration(
                           hintText: 'Crop type',
@@ -342,6 +345,7 @@ Future<void> _createField() async {
                   const SizedBox(height: 5),
                     Form(child:
                       TextField(
+                        key: Key('date'),
                         controller: _dateController,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.calendar_month, color: const Color.fromARGB(255, 153, 194, 162),),
@@ -371,6 +375,7 @@ Future<void> _createField() async {
                       children: [
                         //const Text("Enable frost notification"),
                         Switch(
+                          key: Key('frost'),
                           value: _frostController,
                           inactiveTrackColor: Colors.grey,
                           inactiveThumbColor: const Color.fromARGB(255, 75, 75, 75),
@@ -389,6 +394,7 @@ Future<void> _createField() async {
                       children: [
                       //const Text("Enable hail notification"),
                       Switch(
+                        key: Key('hail'),
                         value: _hailController,
                         inactiveTrackColor: Colors.grey,
                         inactiveThumbColor: Color.fromARGB(255, 75, 75, 75),
@@ -416,13 +422,9 @@ Future<void> _createField() async {
                         else{
                           _createField();
 
-                          sleep(const Duration(seconds: 1));
-                          //todo caricatore
-                          //Navigator.of(context).pushAndRemoveUntil(
-                          //  MaterialPageRoute(builder: (context) => const Homepage()),
-                          //  (Route<dynamic> route) => false,
-                          //);
-                        }
+                          //sleep(const Duration(seconds: 1));
+                          
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomepageMock()));                      }
                       },
                       child:  Text(key: Key('ButtonText') ,_isNotSimplePolygon(_polygonLatLongs) ? "Error" : "Save"),
                     )
@@ -462,47 +464,48 @@ Future<void> _createField() async {
                   Stack(
                     children: [   
                       
-                      currentLatLng == null ? Stack(
+                      currentLatLng == null ? const Stack(
                         children: [
-                          GoogleMap(
-                            
-                            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),].toSet(),
-                            initialCameraPosition: _initialPosition,
-                            onMapCreated: (GoogleMapController controller)
-                            {
-                              _controller.complete(controller);
-                            },
-                            mapType: MapType.hybrid,
-                            markers: _markers,
-                            polygons: _polygons,
-                            onTap: (point){ 
-                              _addPoint(point);
-                            },
-                          ),
+                          //GoogleMap(
+                          //  
+                          //  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),].toSet(),
+                          //  initialCameraPosition: _initialPosition,
+                          //  onMapCreated: (GoogleMapController controller)
+                          //  {
+                          //    _controller.complete(controller);
+                          //  },
+                          //  mapType: MapType.hybrid,
+                          //  markers: _markers,
+                          //  polygons: _polygons,
+                          //  onTap: (point){ 
+                          //    _addPoint(point);
+                          //  },
+                          //),
                           Center(
                             
-                            child: const CircularProgressIndicator(),
+                            child: CircularProgressIndicator(),
                           )
                         ],
                       ) :
-                      GoogleMap(
-                        gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-                                                new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
-                                              ].toSet(),
-
-                      initialCameraPosition: CameraPosition(target:  currentLatLng!, zoom: 15),
-                      
-                      onMapCreated: (GoogleMapController controller)
-                      {
-                        _controller.complete(controller);
-                      },
-                      mapType: MapType.hybrid,
-                      markers: _markers,
-                      polygons: _polygons,
-                      onTap: (point){ 
-                        _addPoint(point);
-                      },
-                      ),
+                      const Placeholder(),
+                      //GoogleMap(
+                      //  gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+                      //                          new Factory<OneSequenceGestureRecognizer> (() => new EagerGestureRecognizer(),),
+                      //                        ].toSet(),
+//
+                      //initialCameraPosition: CameraPosition(target:  currentLatLng!, zoom: 15),
+                      //
+                      //onMapCreated: (GoogleMapController controller)
+                      //{
+                      //  _controller.complete(controller);
+                      //},
+                      //mapType: MapType.hybrid,
+                      //markers: _markers,
+                      //polygons: _polygons,
+                      //onTap: (point){ 
+                      //  _addPoint(point);
+                      //},
+                      //),
                       Positioned(
                         bottom: 30,
                         left: 15,
@@ -625,32 +628,34 @@ Future<void> _createField() async {
                         ),
                       ), 
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: screenWidth*0.4,
-                            child: const Text("Enable frost notification")
-                          ),
-                          Switch(
-                            value: _frostController,
-                            inactiveTrackColor: Colors.grey,
-                            inactiveThumbColor: const Color.fromARGB(255, 75, 75, 75),
-                            activeTrackColor: const Color.fromARGB(255, 153, 194, 162),
-                            activeColor: const Color.fromARGB(255, 77, 115, 78),
-                            onChanged: (bool value){
-                              setState(() {
-                                _frostController = value;
-                              });
-                            }),
-                            
-                      ],),
+                      SingleChildScrollView(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: screenWidth*0.2,
+                              child: const Text("Enable frost notification")
+                            ),
+                            Switch(
+                              value: _frostController,
+                              inactiveTrackColor: Colors.grey,
+                              inactiveThumbColor: const Color.fromARGB(255, 75, 75, 75),
+                              activeTrackColor: const Color.fromARGB(255, 153, 194, 162),
+                              activeColor: const Color.fromARGB(255, 77, 115, 78),
+                              onChanged: (bool value){
+                                setState(() {
+                                  _frostController = value;
+                                });
+                              }),
+                              
+                        ],),
+                      ),
                       const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                         children: [
                         SizedBox(
-                          width: screenWidth*0.4,
+                          width: screenWidth*0.2,
                           child: const Text("Enable hail notification")
                         ),
                         Switch(
@@ -670,22 +675,26 @@ Future<void> _createField() async {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
+                        key: Key('saveButton'),
                         onPressed:(){
-                          if (_isNotSimplePolygon(_polygonLatLongs)){
-                            print("errorone");
-                          }
-                          else{
-                            _createField();
-                
-                            sleep(const Duration(seconds: 1));
-                            //todo caricatore
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => const Homepage()),
-                              (Route<dynamic> route) => false,
-                            );
-                          }
-                        },
-                        child: const Icon(Icons.save, color: Color.fromARGB(255, 153, 194, 162),),
+                        _addPoint(LatLng(45.478, 9.230));
+                        _addPoint(LatLng(45.475, 9.230));
+                        _addPoint(LatLng(45.478, 9.235));
+                        if (_isNotSimplePolygon(_polygonLatLongs)){
+                          print("errorone");
+                        }
+                        else{
+                          _createField();
+
+                          sleep(const Duration(seconds: 1));
+                          //todo caricatore
+                          //Navigator.of(context).pushAndRemoveUntil(
+                          //  MaterialPageRoute(builder: (context) => const Homepage()),
+                          //  (Route<dynamic> route) => false,
+                          //);
+                        }
+                      },
+                        child:  Text(key: Key('ButtonText') ,_isNotSimplePolygon(_polygonLatLongs) ? "Error" : "Save"),
                       )
                     ],
                     ),

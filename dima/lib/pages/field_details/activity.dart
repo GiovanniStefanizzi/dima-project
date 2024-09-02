@@ -128,21 +128,29 @@ class _activityWidgetState extends State<ActivityWidget> {
               child: SingleChildScrollView(
                 child: AlertDialog(
                   title: const Text('Add Activity'),
-                  content: Column(
-                    children: [
-                      TextField(
-                        controller: nameController ,
-                        decoration: const InputDecoration(
-                          labelText: 'Activity Name',
+                  content: SizedBox(
+                    height: screenHeight*0.16,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextField(
+                          controller: nameController ,
+                          decoration: const InputDecoration(
+                            labelText: 'Activity Name',
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(100)), borderSide: BorderSide(color: Colors.grey)),
+                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(100)), borderSide: BorderSide(color: Colors.grey)),
+                          ),
                         ),
-                      ),
-                      TextField(
-                        controller: descriptionController,
-                        decoration: const InputDecoration(
-                          labelText: 'Activity Description',
+                        TextField(
+                          controller: descriptionController,
+                          decoration: const InputDecoration(
+                            labelText: 'Activity Description',
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(100)), borderSide: BorderSide(color: Colors.grey)),
+                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(100)), borderSide: BorderSide(color: Colors.grey)),
+                          ),
                         ),
-                      ),
-                    ],  
+                      ],  
+                    ),
                   ),
                   actions: [
                     TextButton(

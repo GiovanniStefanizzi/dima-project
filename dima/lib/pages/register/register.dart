@@ -60,7 +60,7 @@ final AuthService _auth = AuthService();
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
+                        Text("GrowApp", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
                         SizedBox(
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
@@ -76,6 +76,7 @@ final AuthService _auth = AuthService();
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
                           child: TextFormField(
+                            key: const Key("username"),
                             style: TextStyle(
                               fontSize: screenWidth*0.045,
                             ),   
@@ -94,6 +95,7 @@ final AuthService _auth = AuthService();
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,
                           child: TextFormField(  
+                            key: Key("password"),
                             style: TextStyle(
                               fontSize: screenWidth*0.045,
                             ),                   
@@ -124,6 +126,7 @@ final AuthService _auth = AuthService();
                               height: screenHeight*0.045,
                               width: screenWidth*0.5,
                               child: TextFormField(
+                                key: Key("repeatPassword"),
                                 style: TextStyle(
                                   fontSize: screenWidth*0.045,
                                 ),    
@@ -221,7 +224,7 @@ final AuthService _auth = AuthService();
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.05, fontWeight: FontWeight.bold)),
+                        Text("GrowApp", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.05, fontWeight: FontWeight.bold)),
                         SizedBox(
                           height: screenHeight*0.045,
                           width: screenWidth*0.5,

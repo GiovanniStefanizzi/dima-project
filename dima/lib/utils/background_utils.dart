@@ -16,7 +16,7 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 Future<void> initializeBackgroundFetch() async {
   int status = await BackgroundFetch.configure(
     BackgroundFetchConfig(
-      minimumFetchInterval: 15,
+      minimumFetchInterval: 1440,
       stopOnTerminate: false,
       enableHeadless: true,
       requiresBatteryNotLow: false,

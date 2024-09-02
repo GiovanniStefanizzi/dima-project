@@ -1,12 +1,17 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dima/pages/field_details/modify_field_screen.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
 import 'package:dima/pages/homepage.dart';
 import 'package:dima/pages/map/map_screen.dart';
 import 'package:dima/pages/register/register.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'pages/login/login.dart';
@@ -18,46 +23,85 @@ import 'utils/background_utils.dart';
 
 // ...
 
-void main() async {
+main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  
 
-  FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
-  Size size = view.physicalSize/view.devicePixelRatio;
-  double width = size.width;
-  double height = size.height;
-  var shortestSide = width < height ? width : height;
-  print(shortestSide);
-  final bool useMobileLayout = shortestSide < 600;
+  final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
+  if(connectivityResult.contains(ConnectivityResult.none)){
+    print('No internet connection');
+    FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
+    Size size = view.physicalSize/view.devicePixelRatio;
+    double width = size.width;
+    double height = size.height;
+    var shortestSide = width < height ? width : height;
+    print(shortestSide);
+    final bool useMobileLayout = shortestSide < 600;
     
-  if(useMobileLayout){
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+
+    if(useMobileLayout){
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+    else{
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
+
+    runApp(const MyApp(false));
   }
   else{
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    print('Internet connection available');
+
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+
+    FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
+    Size size = view.physicalSize/view.devicePixelRatio;
+    double width = size.width;
+    double height = size.height;
+    var shortestSide = width < height ? width : height;
+    print(shortestSide);
+    final bool useMobileLayout = shortestSide < 600;
+
+    if(useMobileLayout){
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+    else{
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
+    //await FirebaseAuth.instance.signOut();
+
+    // Inizializza le notifiche
+    NotificationService().initNotification();
+
+
+    // Inizializza il background fetch
+    initializeBackgroundFetch();
+
+    runApp(const MyApp(true));
   }
-  //await FirebaseAuth.instance.signOut();
-
-  // Inizializza le notifiche
-  NotificationService().initNotification();
   
-  
-  // Inizializza il background fetch
-  initializeBackgroundFetch();
-
-  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget { 
-  const MyApp({super.key});
+  final bool isConnected;
+  const MyApp(
+    @required  this.isConnected,
+    {super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -70,11 +114,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    
+
   }
 
   @override
   Widget build(BuildContext context) {
+    
+
     return MaterialApp(
       title: 'Dima',
       theme: ThemeData(
@@ -84,7 +130,19 @@ class _MyAppState extends State<MyApp> {
         ),
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: AuthStateChecker(),
+      home:Builder(builder: (context) {
+        if(widget.isConnected){
+          return AuthStateChecker();
+        }
+        else{
+          return const Scaffold(
+            body: Center(
+              child: Text('No internet connection'),
+            ),
+          );
+        }
+      }),
+       //if(widget._isConnected){ return AuthStateChecker()},
       routes:{
         '/register': (context)=>Register(),
         '/login': (context)=>Login(),
@@ -95,6 +153,16 @@ class _MyAppState extends State<MyApp> {
         '/modify_field': (context)=>ModifyFieldScreen(),
       }
       );
+  }
+  
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => const AlertDialog(
+            title: Text("Internet needed!"),
+            content: Text("You may want to exit the app here"),
+          ),
+    );
   }
 }
 

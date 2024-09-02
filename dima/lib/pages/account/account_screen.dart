@@ -80,7 +80,11 @@ class _accountScreenState extends State<AccountScreen> {
                         title: const Text('Change username'),
                         content: TextField(
                           controller: _controller,
-                          decoration: const InputDecoration(hintText: 'Enter new username'),
+                          decoration: const InputDecoration(
+                            hintText: 'Enter new username',
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(100)), borderSide: BorderSide(color: Colors.grey)),
+                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(100)), borderSide: BorderSide(color: Colors.grey)),
+                            ),
                         ),
                         actions: <Widget>[
                           TextButton(
@@ -110,6 +114,7 @@ class _accountScreenState extends State<AccountScreen> {
                 child: const Text('Change username'),
               ),
               TextButton(
+                key: Key('logout'),
                 onPressed: () async{
                   await _auth.logOut();
                   Navigator.pushNamed(context, '/login');

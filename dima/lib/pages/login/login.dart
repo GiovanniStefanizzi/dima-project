@@ -61,7 +61,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
+                      Text("GrowApp", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.08, fontWeight: FontWeight.bold)),
                       SizedBox(
                         height: screenHeight*0.045,
                         width: screenWidth*0.5,
@@ -88,6 +88,7 @@ class _LoginState extends State<Login> {
                           ),
                           SizedBox(height: screenHeight*0.03),
                           TextButton(
+                            key: const Key('register'),
                             style: ThemeOptions.textButtonStyle(),
                             onPressed: () {
                             Navigator.pushNamed(context, '/register');
@@ -157,7 +158,7 @@ class _LoginState extends State<Login> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("Appazza", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.05, fontWeight: FontWeight.bold)),
+                      Text("GrowApp", style: TextStyle(color:const Color.fromARGB(255, 122, 145, 141), fontSize: screenWidth*0.05, fontWeight: FontWeight.bold)),
                       SizedBox(
                         height: screenHeight*0.045,
                         width: screenWidth*0.5,

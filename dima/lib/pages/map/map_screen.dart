@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dima/firestore/firestore.dart'; 
 //import 'package:latlong2/latlong.dart';
@@ -121,8 +122,8 @@ class _MapScreenState extends State<MapScreen>{
   }
 
  bool _isNotSimplePolygon(List<LatLng> polygon){
-  if(polygon.length <= 3) {
-    return false;
+  if(polygon.length < 3) {
+    return true;
   }
 
   for(int i = 0; i < polygon.length - 2; i++){
@@ -461,9 +462,30 @@ Future<void> _createField() async {
                     ElevatedButton(
                       onPressed:(){
                         if (_isNotSimplePolygon(_polygonLatLongs)){
-                          print("errorone");
+                          Fluttertoast.showToast(
+                              msg: 'The polygon is not valid',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.red,
+                              backgroundColor: Colors.white,
+                              fontSize: 16.0
+                            );
                         }
                         else{
+                          if(_fieldNameController.text.isEmpty || _cropTypeController.text.isEmpty || _dateController.text.isEmpty){
+                            Fluttertoast.showToast(
+                              msg: 'Please fill all the fields',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.red,
+                              backgroundColor: Colors.white,
+                              fontSize: 16.0
+                            );
+                            return;
+
+                          }
                           _createField();
 
                           sleep(const Duration(seconds: 1));
@@ -716,7 +738,16 @@ Future<void> _createField() async {
                       ElevatedButton(
                         onPressed:(){
                           if (_isNotSimplePolygon(_polygonLatLongs)){
-                            print("errorone");
+                            Fluttertoast.showToast(
+                              msg: 'The polygon is not valid',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              textColor: Colors.red,
+                              backgroundColor: Colors.white,
+                              fontSize: 16.0
+                            );
+                            
                           }
                           else{
                             _createField();
