@@ -58,6 +58,7 @@ class ThemeOptions {
 
   static InputDecoration inputDecoration(String labelText, String hintText, BuildContext context){
     return InputDecoration(
+      
       labelText: labelText,
       hintText: hintText,
       labelStyle: TextStyle(

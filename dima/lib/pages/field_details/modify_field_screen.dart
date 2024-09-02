@@ -212,6 +212,7 @@ class _ModifyFieldScreenState extends State<ModifyFieldScreen> {
                               String datePlanted = _dateController.text;
                               bool hailAlert = _hailController;
                               bool frostAlert = _frostController;
+                              List<dynamic> activities = field.activities;
               
                               await Firestore().updateField(index, name, cropType, datePlanted, frostAlert, hailAlert);
               

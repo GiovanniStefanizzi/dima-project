@@ -218,7 +218,10 @@ class Firestore{
 
   updateField(int index, String name, String cropType, String datePlanted, bool frostAlert, bool hailAlert) async {
     Field_model old_field = await getField(index);
-    Field_model updated_field = Field_model(name: name, cropType: cropType, datePlanted: datePlanted, frostAlert: frostAlert, hailAlert: hailAlert, points: old_field.points, activities: old_field.activities);
+    //empty list of activities
+    List<Activity> oldActivities = old_field.activities;
+    List<Activity> activities = []; 
+    Field_model updated_field = Field_model(name: name, cropType: cropType, datePlanted: datePlanted, frostAlert: frostAlert, hailAlert: hailAlert, points: old_field.points, activities: activities);
     String? userId = AuthService().getCurrentUserId();
     CollectionReference users = FirebaseFirestore.instance.collection("users");
     //update the document at the index with the updated field
@@ -226,6 +229,9 @@ class Firestore{
       querySnapshot.docs.forEach((doc) {
         List<dynamic> fields = doc['fields'];
         fields[index] = updated_field.toMap();
+        for (int i = 0; i < oldActivities.length; i++) {
+          addActivity(oldActivities[i].toMap(), index);
+        }
         doc.reference.update({'fields': fields});
       });
     });

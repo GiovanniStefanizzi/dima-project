@@ -8,6 +8,7 @@ import 'package:dima/models/field_model.dart';
 import 'package:dima/pages/field_details/activity.dart';
 import 'package:dima/pages/field_details/maps_overlay.dart';
 import 'package:dima/pages/field_list/field_list_screen.dart';
+import 'package:dima/pages/homepage.dart';
 import 'package:dima/utils/field_utils.dart';
 import 'package:dima/utils/map_type.dart';
 import 'package:flutter/foundation.dart';
@@ -193,7 +194,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                             await Future.delayed(Duration(seconds: 1));
                             //todo caricatore
                             Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => FieldListScreen()),
+                              MaterialPageRoute(builder: (context) => Homepage()),
                               (Route<dynamic> route) => false,
                             );
                           },
@@ -355,7 +356,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
                             await Future.delayed(Duration(seconds: 1));
                             //todo caricatore
                             Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => FieldListScreen()),
+                              MaterialPageRoute(builder: (context) => Homepage()),
                               (Route<dynamic> route) => false,
                             );
                           },
