@@ -14,8 +14,6 @@ Future<String> getMap(List<GeoPoint> points, MapOverlayType mapType) async {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       String imageUrl = data['link'];
-
-      print("Image URL: $imageUrl");
       return imageUrl;
     } else {
       return ('Failed to load image');

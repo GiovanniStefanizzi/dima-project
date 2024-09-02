@@ -28,7 +28,6 @@ Future<void> initializeBackgroundFetch() async {
     (taskId) async {
       // Logica di background fetch
       //DateTime now = DateTime.now();
-      print("Notification sent");
       await NotificationService().notifyUser();
       BackgroundFetch.finish(taskId);
     },

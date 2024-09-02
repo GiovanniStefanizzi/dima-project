@@ -40,7 +40,6 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     setState(() {
       _pages[2]= MapsOverlayPage(updateParentData: updateDataFromChild, startingType: newData);
       _mapType = newData;
-      //print(_mapType);
     });
   }
   final Map<MapOverlayType, String> _mapUrls = {

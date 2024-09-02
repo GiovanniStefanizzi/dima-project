@@ -68,7 +68,6 @@ class AuthService {
   }
 
   Future<UserCredential> signWithGoogle () async {
-    print('signing in with google');
     try{
       await _googleSignIn.disconnect();
     }
@@ -86,13 +85,12 @@ class AuthService {
       idToken: googleAuth?.idToken,
     );
 
-    //print('credential: $credential');
+
     
 
 
     // Once signed in, return the UserCredential
     UserCredential result = await FirebaseAuth.instance.signInWithCredential(credential);
-    //print('result: $result');
 
     if (result.additionalUserInfo!.isNewUser) {
       User_model user = User_model.createUser(uid: result.user!.uid, email: result.user!.email!, username: result.user!.displayName!);
@@ -107,7 +105,7 @@ class AuthService {
   Future logOut() async {
     try {
       await _auth.signOut();
-      print('signed out');
+   
     } catch (e) {
       print(e.toString());
       return null;
@@ -124,7 +122,6 @@ class AuthService {
       String userId = user.uid;
       return userId;
     } else {
-      print('User is not signed in.');
       return null;
     }
   }

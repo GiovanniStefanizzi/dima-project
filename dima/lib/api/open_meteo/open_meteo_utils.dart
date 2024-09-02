@@ -13,7 +13,6 @@ Future<double> getTemperature(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     double temp = data['current']['temperature_2m'];
-    //print('RESPONSE:'+temp.toString());
     return temp;
   } else {
     throw HttpException('Failed to load temperature');
@@ -27,7 +26,6 @@ Future<int> getWeatherCode(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     int code = data['current']['weathercode'];
-    //print('RESPONSE:'+code.toString()+" CONVERSIOED:"+convertCodesToIcons(code).toString());
     return convertCodesToIcons(code);
   } else {
     throw HttpException('Failed to load weather code');
@@ -56,7 +54,6 @@ Future<double> getMaxTemperature(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     double temp = data['daily']['temperature_2m_max'][0];
-    //print('RESPONSE:'+temp.toString());
     return temp;
   } else {
     throw HttpException('Failed to load temperature');
@@ -70,7 +67,6 @@ Future<double> getMinTemperature(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     double temp = data['daily']['temperature_2m_min'][0];
-    //print('RESPONSE:'+temp.toString());
     return temp;
   } else {
     throw HttpException('Failed to load temperature');
@@ -84,7 +80,6 @@ Future<double> getDailyPrecipitation(GeoPoint point) async{
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     double precipitation = data['daily']['precipitation_sum'][0];
-    //print('RESPONSE:'+precipitation.toString());
     return precipitation;
   } else {
     throw HttpException('Failed to load precipitation');
@@ -98,7 +93,6 @@ Future<int> getCurrentHumidity(GeoPoint point) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     int humidity = data['current']['relative_humidity_2m'];
-    //print('RESPONSE:'+humidity.toString());
     return humidity;
   } else {
     throw HttpException('Failed to load humidity');
@@ -113,7 +107,6 @@ Future<double> getMinTemperature3days(GeoPoint point) async {
       var data = jsonDecode(response.body);
       List<double> temp = data['daily']['temperature_2m_min'].cast<double>();
       double minTemp = temp.reduce(min);
-      //print('RESPONSE:'+temp.toString());
       return minTemp;
     } else {
       throw HttpException('Failed to load temperature');
@@ -127,10 +120,8 @@ Future<int> getMaxWeatherCode3days(GeoPoint point) async {
     var response = await http.get(Uri.parse('https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&daily=weather_code&timezone=Europe%2FBerlin&forecast_days=3'));
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      print(data['daily']['weather_code']);
       List<int> codes = data['daily']['weather_code'].cast<int>();
       int code = codes.reduce(max);
-      //print('RESPONSE:'+code.toString());
       return code;
     } else {
       throw HttpException('Failed to load weather code');
@@ -165,11 +156,7 @@ Future<MeteoForecast_model> getWeatherForecast(GeoPoint point) async {
     .toList()
     .sublist(1,4);
 
-    //print("WEATHER CODES: "+weatherCode.toString());
-    //print("MIN TEMP: "+minTemp.toString());
-    //print("MAX TEMP: "+maxTemp.toString());
-    //print("PRECIPITATION: "+precipitation.toString());
-    //print("DATE: "+date.toString());
+   
     return MeteoForecast_model(weatherCode: weatherCode, minTemp: minTemp, maxTemp: maxTemp, precipitation: precipitation, date: date);
   } else {
     throw HttpException('Failed to load meteo forecast');

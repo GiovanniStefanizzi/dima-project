@@ -81,7 +81,6 @@ class Firestore{
         // Applica l'aggiornamento alla transazione
         transaction.update(docRef, {'fields': fields});
 
-        print('Lista aggiornata con successo!');
       } else {
         print('Indice esterno non valido');
       }
@@ -96,8 +95,7 @@ class Firestore{
     String? userId = AuthService().getCurrentUserId();
     User_model? user = await getCurrentUser();
     Map<String, dynamic> userMap;
-    //print( "userId: $userId");
-    
+
     user?.fields[externalIndex].activities.add(newActivity);
     userMap = user!.toMap();
     CollectionReference users = FirebaseFirestore.instance.collection("users");
@@ -123,8 +121,6 @@ class Firestore{
 
         // Applica l'aggiornamento alla transazione
         transaction.update(docRef, {'fields': fields});
-
-        print('Lista aggiornata con successo!');
       } else {
         print('Indice esterno non valido');
       }
@@ -137,7 +133,6 @@ class Firestore{
     String? userId = AuthService().getCurrentUserId();
     User_model? user = await getCurrentUser();
     Map<String, dynamic> userMap;
-    //print( "userId: $userId");
 
     user?.fields[externalIndex].activities.removeAt(internalIndex);
     userMap = user!.toMap();
@@ -165,8 +160,6 @@ class Firestore{
 
         // Applica l'aggiornamento alla transazione
         transaction.update(docRef, {'fields': fields});
-
-        print('Lista aggiornata con successo!');
       } else {
         print('Indice esterno non valido');
       }
@@ -177,7 +170,6 @@ class Firestore{
 
   Future<User_model?> getCurrentUser() async {
     String? userId=AuthService().getCurrentUserId();
-    //print( "userId: $userId");
     //String userId="0IjeLFlmtydMGsFarrTs6l5Nt0r1";
 
     try{
@@ -187,7 +179,6 @@ class Firestore{
       DocumentSnapshot documentSnapshot = firstDocument as DocumentSnapshot;
       if(documentSnapshot.exists){
         Map<String, dynamic> documentData = documentSnapshot.data() as Map<String, dynamic>;
-        //print(documentData);
         User_model user_model =User_model.fromMap(documentData);
         return user_model;
       }
