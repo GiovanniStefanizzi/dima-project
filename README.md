@@ -7,18 +7,18 @@ android phones and tablets
 
 ## 🌟Features
 The main functionalities of the app allow the farmer to:
- • Insert, save, and edit his/her own fields;
- • Track the activities of the fields;
- • Visualize useful satellite images of various vegetation indexes on an interactive map.
+ - Insert, save, and edit his/her own fields;
+ - Track the activities of the fields;
+ - Visualize useful satellite images of various vegetation indexes on an interactive map.
  To this purpose, the Google Earth Engine service is used;
- • Check weather conditions on the locations of the fields in real time and forecasts up
+ - Check weather conditions on the locations of the fields in real time and forecasts up
  to three days ahead. To this purpose, the Open-Meteo API is used;
- • If requested, receive notifications when hail or below zero temperatures are forecast;
+ - If requested, receive notifications when hail or below zero temperatures are forecast;
 
 ## 🛠️ Built With
- • Flutter - Framework for building native apps using React;
- • Firebase - Backend services for authentication and database;
- • Google Earth Engine - Satellite data retrieval;
+ - Flutter - Framework for building native apps using React;
+ - Firebase - Backend services for authentication and database;
+ - Google Earth Engine - Satellite data retrieval;
 
 
 
