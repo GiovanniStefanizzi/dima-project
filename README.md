@@ -16,7 +16,7 @@ The main functionalities of the app allow the farmer to:
  - If requested, receive notifications when hail or below zero temperatures are forecast;
 
 ## 🛠️ Built With
- - Flutter - Framework for building native apps using React;
+ - Flutter - Framework for building applications in Dart
  - Firebase - Backend services for authentication and database;
  - Google Earth Engine - Satellite data retrieval;
 
