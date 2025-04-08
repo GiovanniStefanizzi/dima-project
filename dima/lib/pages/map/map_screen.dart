@@ -81,7 +81,7 @@ class _MapScreenState extends State<MapScreen>{
   // }
 
   // void getSuggestion(String input) async {
-  //   String kPLACES_API_KEY = "AIzaSyBgyp5fhb7cpVEWS2cESCVMcRG0d5PwhR4";
+  //   String kPLACES_API_KEY = "";
   //   String type = '(regions)';
   //   String baseURL =
   //       'https://maps.googleapis.com/maps/api/place/autocomplete/json';
